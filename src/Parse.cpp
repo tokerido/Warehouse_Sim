@@ -14,8 +14,8 @@ struct Customer {
 struct Volunteer {
     std::string name;
     std::string role;
-    int coolDown;
-    int maxDistance;
+    int coolDown; // Only for collectors
+    int maxDistance; // Only for drivers
     int distancePerStep; // Only for drivers
     int maxOrders; // Optional
 };
@@ -53,12 +53,12 @@ int main() {
             customers.push_back(customer);
         } else if (type == "volunteer") {
             Volunteer volunteer;
-            iss >> volunteer.name >> volunteer.role >> volunteer.coolDown;
+            iss >> volunteer.name >> volunteer.role;
 
-            if (volunteer.role == "driver") {
+            if (volunteer.role == "driver" | volunteer.role == "limited_driver") {
                 iss >> volunteer.maxDistance >> volunteer.distancePerStep;
             } else {
-                iss >> volunteer.maxDistance; // In case of collector
+                iss >> volunteer.coolDown; // In case of collector
             }
 
             // Check if maxOrders is specified
@@ -85,11 +85,12 @@ int main() {
     }
 
     for (const auto& volunteer : volunteers) {
-        std::cout << "Volunteer: " << volunteer.name << ", Role: " << volunteer.role
-                  << ", CoolDown: " << volunteer.coolDown << ", MaxDistance: " << volunteer.maxDistance;
+        std::cout << "Volunteer: " << volunteer.name << ", Role: " << volunteer.role;
 
-        if (volunteer.role == "driver") {
-            std::cout << ", DistancePerStep: " << volunteer.distancePerStep;
+        if (volunteer.role == "driver" | volunteer.role == "limited_driver") {
+            std::cout << ", MaxDistance: " << volunteer.maxDistance << ", DistancePerStep: " << volunteer.distancePerStep;
+        } else {
+            std::cout << ", CoolDown: " << volunteer.coolDown;
         }
 
         std::cout << ", MaxOrders: " << volunteer.maxOrders << std::endl;
