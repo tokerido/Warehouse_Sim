@@ -26,9 +26,15 @@ bool Volunteer::isBusy() const
 // do i need to do something with the virtual funcs?
 
 
-CollectorVolunteer::CollectorVolunteer(int id, string name, int coolDown): Volunteer(id, name), coolDown(coolDown){}
-CollectorVolunteer *CollectorVolunteer::clone() const{} //override?
-void CollectorVolunteer::step(){} //override?
+CollectorVolunteer::CollectorVolunteer(int id, string name, int coolDown): Volunteer(id, name), coolDown(coolDown), timeLeft(0){}
+CollectorVolunteer *CollectorVolunteer::clone() const
+{
+    //TODO
+}
+void CollectorVolunteer::step()
+{
+    //TODO
+}
 int CollectorVolunteer::getCoolDown() const
 {
     return coolDown;
@@ -48,5 +54,95 @@ bool CollectorVolunteer::hasOrdersLeft() const
 }
 bool CollectorVolunteer::canTakeOrder(const Order &order) const
 {
-    
+    return (!isBusy() && hasOrdersLeft() && order.getStatus() == OrderStatus::PENDING);
 }
+void CollectorVolunteer::acceptOrder(const Order &order)
+{
+    activeOrderId = order.getId();
+    timeLeft = coolDown;
+}
+string CollectorVolunteer::toString() const
+{
+    //TODO
+}
+
+LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, string name, int coolDown ,int maxOrders): CollectorVolunteer(id, name, coolDown), maxOrders(maxOrders), ordersLeft(maxOrders){}
+LimitedCollectorVolunteer *LimitedCollectorVolunteer::clone() const
+{
+    //TODO
+}
+bool LimitedCollectorVolunteer::hasOrdersLeft() const
+{
+    return ordersLeft > 0;
+}
+bool LimitedCollectorVolunteer::canTakeOrder(const Order &order) const
+{
+    return (!isBusy() && hasOrdersLeft() && order.getStatus() == OrderStatus::PENDING);
+}
+void LimitedCollectorVolunteer::acceptOrder(const Order &order)
+{
+    CollectorVolunteer::acceptOrder(order);
+    --ordersLeft;
+}
+int LimitedCollectorVolunteer::getMaxOrders() const
+{
+    return maxOrders;
+}
+int LimitedCollectorVolunteer::getNumOrdersLeft() const
+{
+    return ordersLeft;
+}
+string LimitedCollectorVolunteer::toString() const
+{
+    //TODO
+}
+
+
+
+
+DriverVolunteer::DriverVolunteer(int id, string name, int maxDistance, int distancePerStep): Volunteer(id, name), maxDistance(maxDistance), distancePerStep(distancePerStep), distanceLeft(0){}
+DriverVolunteer *DriverVolunteer::clone() const
+{
+    //TODO
+}
+int DriverVolunteer::getDistanceLeft() const
+{
+    return distanceLeft;
+}
+int DriverVolunteer::getMaxDistance() const
+{
+    return maxDistance;
+}
+int DriverVolunteer::getDistancePerStep() const
+{
+    return distancePerStep;
+}
+bool DriverVolunteer::decreaseDistanceLeft()
+{
+    distanceLeft = distanceLeft - distancePerStep;
+    return distanceLeft <= 0;
+}
+bool DriverVolunteer::hasOrdersLeft() const
+{
+    return true;
+}
+bool DriverVolunteer::canTakeOrder(const Order &order) const
+{
+    return (!isBusy() && order.distance <= maxDistance && hasOrdersLeft() && order.getStatus() == OrderStatus::PENDING);
+    // HOW TO CHECK IF ORDER DISTANCE IS SMALLER THAN MAXDISTANCE???
+}
+void DriverVolunteer::acceptOrder(const Order &order)
+{
+    activeOrderId = order.getId();
+    distanceLeft = order.distance;
+}
+void DriverVolunteer::step()
+{
+    //TODO
+}
+string DriverVolunteer::toString() const
+{
+    //TODO
+}
+
+
