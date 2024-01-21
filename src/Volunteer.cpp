@@ -146,3 +146,34 @@ string DriverVolunteer::toString() const
 }
 
 
+LimitedDriverVolunteer::LimitedDriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep,int maxOrders): DriverVolunteer(id, name, maxDistance, distancePerStep), maxOrders(maxOrders), ordersLeft(maxOrders){}
+LimitedDriverVolunteer *LimitedDriverVolunteer:: clone() const
+{
+    //TODO
+}
+int LimitedDriverVolunteer::getMaxOrders() const
+{
+    return maxOrders;
+}
+int LimitedDriverVolunteer::getNumOrdersLeft() const
+{
+    return ordersLeft;
+}
+bool LimitedDriverVolunteer::hasOrdersLeft() const
+{
+    return ordersLeft > 0;
+}
+bool LimitedCollectorVolunteer::canTakeOrder(const Order &order) const
+{
+    return (!isBusy() && order.distance <= maxDistance && hasOrdersLeft() && order.getStatus() == OrderStatus::PENDING);
+    // HOW TO CHECK IF ORDER DISTANCE IS SMALLER THAN MAXDISTANCE???
+}
+void LimitedCollectorVolunteer::acceptOrder(const Order &order)
+{
+    DriverVolunteer::acceptOrder(order);
+    --ordersLeft;
+}
+string LimitedDriverVolunteer::toString() const
+{
+    //TODO
+}
