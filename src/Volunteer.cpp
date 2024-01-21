@@ -29,11 +29,13 @@ bool Volunteer::isBusy() const
 CollectorVolunteer::CollectorVolunteer(int id, string name, int coolDown): Volunteer(id, name), coolDown(coolDown), timeLeft(0){}
 CollectorVolunteer *CollectorVolunteer::clone() const
 {
-    //TODO
+    return new CollectorVolunteer(*this); //???
 }
 void CollectorVolunteer::step()
 {
-    //TODO
+    if (timeLeft != 0 && decreaseCoolDown()){
+        activeOrderId = NO_ORDER;
+    }
 }
 int CollectorVolunteer::getCoolDown() const
 {
@@ -58,6 +60,9 @@ bool CollectorVolunteer::canTakeOrder(const Order &order) const
 }
 void CollectorVolunteer::acceptOrder(const Order &order)
 {
+    if(!canTakeOrder(order)){
+        //ERROR
+    }
     activeOrderId = order.getId();
     timeLeft = coolDown;
 }
@@ -133,12 +138,18 @@ bool DriverVolunteer::canTakeOrder(const Order &order) const
 }
 void DriverVolunteer::acceptOrder(const Order &order)
 {
+    if(!canTakeOrder(order)){
+        //ERROR
+    }
     activeOrderId = order.getId();
     distanceLeft = order.distance;
 }
 void DriverVolunteer::step()
 {
-    //TODO
+    if (distanceLeft > 0 && decreaseDistanceLeft()){
+        activeOrderId = NO_ORDER;
+        distanceLeft = 0;
+    }
 }
 string DriverVolunteer::toString() const
 {
@@ -163,14 +174,18 @@ bool LimitedDriverVolunteer::hasOrdersLeft() const
 {
     return ordersLeft > 0;
 }
-bool LimitedCollectorVolunteer::canTakeOrder(const Order &order) const
+bool LimitedDriverVolunteer::canTakeOrder(const Order &order) const
 {
     return (!isBusy() && order.distance <= maxDistance && hasOrdersLeft() && order.getStatus() == OrderStatus::PENDING);
     // HOW TO CHECK IF ORDER DISTANCE IS SMALLER THAN MAXDISTANCE???
 }
-void LimitedCollectorVolunteer::acceptOrder(const Order &order)
+void LimitedDriverVolunteer::acceptOrder(const Order &order)
 {
-    DriverVolunteer::acceptOrder(order);
+    if(!canTakeOrder(order)){
+        //ERROR
+    }
+    activeOrderId = order.getId();
+    distanceLeft = order.distance;
     --ordersLeft;
 }
 string LimitedDriverVolunteer::toString() const
