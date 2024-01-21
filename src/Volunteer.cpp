@@ -1,6 +1,7 @@
 #include "../include/Volunteer.h"
 #include "../include/WareHouse.h"
 #include "../include/Order.h"
+#include <iostream>
 
 Volunteer::Volunteer(int id, const string &name) : id(id), name(name), completedOrderId(NO_ORDER), activeOrderId(NO_ORDER) {}
 int Volunteer::getId() const
@@ -23,7 +24,7 @@ bool Volunteer::isBusy() const
 {
     return activeOrderId != NO_ORDER;
 }
-// do i need to do something with the virtual funcs?
+
 
 
 CollectorVolunteer::CollectorVolunteer(int id, string name, int coolDown): Volunteer(id, name), coolDown(coolDown), timeLeft(0){}
@@ -60,11 +61,17 @@ bool CollectorVolunteer::canTakeOrder(const Order &order) const
 }
 void CollectorVolunteer::acceptOrder(const Order &order)
 {
-    if(!canTakeOrder(order)){
-        //ERROR
+    try {
+        if(!canTakeOrder(order)){
+            throw "Can't accept order!";
+        } else {
+            activeOrderId = order.getId();
+            timeLeft = coolDown;
+        }
     }
-    activeOrderId = order.getId();
-    timeLeft = coolDown;
+    catch(const char* exp){
+        std::cout << "Error : " << exp <<" Order ID : " << order.getId() << std::endl;
+    }
 }
 string CollectorVolunteer::toString() const
 {
@@ -133,16 +140,22 @@ bool DriverVolunteer::hasOrdersLeft() const
 }
 bool DriverVolunteer::canTakeOrder(const Order &order) const
 {
-    return (!isBusy() && order.distance <= maxDistance && hasOrdersLeft() && order.getStatus() == OrderStatus::PENDING);
-    // HOW TO CHECK IF ORDER DISTANCE IS SMALLER THAN MAXDISTANCE???
+    return (!isBusy() && order.getDistance() <= maxDistance && hasOrdersLeft() && order.getStatus() == OrderStatus::PENDING);
 }
 void DriverVolunteer::acceptOrder(const Order &order)
 {
-    if(!canTakeOrder(order)){
-        //ERROR
+    try {
+        if(!canTakeOrder(order)){
+            throw "Can't accept order!";
+        } else {
+            activeOrderId = order.getId();
+            distanceLeft = order.getDistance();
+        }
     }
-    activeOrderId = order.getId();
-    distanceLeft = order.distance;
+    catch(const char* exp){
+        std::cout << "Error : " << exp <<" Order ID : " << order.getId() << std::endl;
+    }
+
 }
 void DriverVolunteer::step()
 {
@@ -176,16 +189,11 @@ bool LimitedDriverVolunteer::hasOrdersLeft() const
 }
 bool LimitedDriverVolunteer::canTakeOrder(const Order &order) const
 {
-    return (!isBusy() && order.distance <= maxDistance && hasOrdersLeft() && order.getStatus() == OrderStatus::PENDING);
-    // HOW TO CHECK IF ORDER DISTANCE IS SMALLER THAN MAXDISTANCE???
+    return (!isBusy() && order.getDistance() <= getMaxDistance() && hasOrdersLeft() && order.getStatus() == OrderStatus::PENDING);
 }
 void LimitedDriverVolunteer::acceptOrder(const Order &order)
 {
-    if(!canTakeOrder(order)){
-        //ERROR
-    }
-    activeOrderId = order.getId();
-    distanceLeft = order.distance;
+    DriverVolunteer::acceptOrder(order);
     --ordersLeft;
 }
 string LimitedDriverVolunteer::toString() const
