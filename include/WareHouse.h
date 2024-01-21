@@ -26,6 +26,8 @@ class WareHouse {
         Order &getOrder(int orderId) const;
         void close();
         void open();
+        int setCustomerId() const; // new func
+        int setVolunteerId() const; // new func
 
     private:
         bool isOpen;

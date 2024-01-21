@@ -3,6 +3,10 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include "../include/Parse.h"
+#include "../include/WareHouse.h"
+#include "../include/Customer.h"
+#include "../include/Volunteer.h"
 
 struct Customer {
     std::string name;
@@ -20,17 +24,21 @@ struct Volunteer {
     int maxOrders; // Optional
 };
 
-int main() {
+Parse::Parse(const string &configFilePath, WareHouse wareHouse) {
     // Specify the file path
-    std::string file_path = "configFileExample.txt";
+    std::string file_path = configFilePath;
 
     // Open the file
     std::ifstream file(file_path);
 
     // Check if the file is open successfully
-    if (!file.is_open()) {
-        std::cerr << "Error opening the file: " << file_path << std::endl;
-        return 1; // Exit with an error code
+    try {
+        if (!file.is_open()) {
+            throw "Error opening the file: ";
+        }
+    }
+    catch(const char* exp){
+        std::cout <<  exp << file_path << std::endl;
     }
 
     // Create vectors to store data
@@ -78,23 +86,41 @@ int main() {
 
     // Now, you can process the data stored in the vectors as needed
 
-    // Example: Print the data
     for (const auto& customer : customers) {
-        std::cout << "Customer: " << customer.name << ", Type: " << customer.type
-                  << ", Distance: " << customer.distance << ", MaxOrders: " << customer.maxOrders << std::endl;
-    }
-
-    for (const auto& volunteer : volunteers) {
-        std::cout << "Volunteer: " << volunteer.name << ", Role: " << volunteer.role;
-
-        if (volunteer.role == "driver" | volunteer.role == "limited_driver") {
-            std::cout << ", MaxDistance: " << volunteer.maxDistance << ", DistancePerStep: " << volunteer.distancePerStep;
+        int id = wareHouse.setCustomerId();
+        if (customer.type == "soldier"){      
+            SoldierCustomer soldierCustomer(id, customer.name, customer.distance, customer.maxOrders);
+            customersList.push_back(&soldierCustomer);
         } else {
-            std::cout << ", CoolDown: " << volunteer.coolDown;
+            CivilianCustomer civilianCustomer(id, customer.name, customer.distance, customer.maxOrders);
+            customersList.push_back(&civilianCustomer);
         }
-
-        std::cout << ", MaxOrders: " << volunteer.maxOrders << std::endl;
     }
 
-    return 0;
+    vector<Volunteer*> volunteers;   
+    for (const auto& volunteer : volunteers) {
+        int id = wareHouse.setVolunteerId();
+        if (volunteer.role == "collector"){
+            CollectorVolunteer collectorVolunteer(id, volunteer.name, volunteer.coolDown);
+            volunteersList.push_back(&collectorVolunteer);
+        } else if (volunteer.role == "limited_collector"){
+            LimitedCollectorVolunteer limitedCollectorVolunteer(id, volunteer.name, volunteer.coolDown, volunteer.maxOrders);
+            volunteersList.push_back(&limitedCollectorVolunteer);
+        } else if (volunteer.role == "driver"){
+            DriverVolunteer driverVolunteer(id, volunteer.name, volunteer.maxDistance, volunteer.distancePerStep);
+            volunteersList.push_back(&driverVolunteer);
+        }else {
+            LimitedDriverVolunteer limitedDriverVolunteer(id, volunteer.name, volunteer.maxDistance, volunteer.distancePerStep, volunteer.maxOrders);
+        }
+    }
+}
+
+const vector<Customer*> &Parse::getCustomersList() const
+{
+    return customersList;
+}
+
+const vector<Volunteer*> &Parse::getVolunteersList() const
+{
+    return volunteersList;
 }
