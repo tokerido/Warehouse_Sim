@@ -96,8 +96,7 @@ Parse::Parse(const string &configFilePath, WareHouse wareHouse) {
             customersList.push_back(&civilianCustomer);
         }
     }
-
-    vector<Volunteer*> volunteers;   
+  
     for (const auto& volunteer : volunteers) {
         int id = wareHouse.setVolunteerId();
         if (volunteer.role == "collector"){

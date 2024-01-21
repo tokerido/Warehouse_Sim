@@ -8,19 +8,19 @@ const string &Customer:: getName() const
 {
     return name;
 }
-int Customer:: getId() const 
+int Customer::getId() const 
 {
     return id;
 }
-int Customer:: getCustomerDistance() const 
+int Customer::getCustomerDistance() const 
 {
     return locationDistance;
 }
-int Customer:: getMaxOrders() const 
+int Customer::getMaxOrders() const 
 {
     return maxOrders;
 }
-int Customer:: getNumOrders() const 
+int Customer::getNumOrders() const 
 {
     return ordersId.size();
 }
@@ -29,7 +29,7 @@ const vector<int> &Customer::getOrdersIds() const
     return ordersId;
 }
 //info
-bool Customer:: canMakeOrder() const {
+bool Customer::canMakeOrder() const {
     return ordersId.size() < maxOrders;
 };
 
