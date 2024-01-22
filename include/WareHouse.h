@@ -28,6 +28,7 @@ class WareHouse {
         void open();
         int setCustomerId(); // new func
         int setVolunteerId(); // new func
+        int setOrderId(); //new func
 
     private:
         bool isOpen;
@@ -39,4 +40,5 @@ class WareHouse {
         vector<Customer*> customers;
         int customerCounter; //For assigning unique customer IDs
         int volunteerCounter; //For assigning unique volunteer IDs
+        int orderCounter; //For assigning unique order IDs
 };
