@@ -23,7 +23,7 @@ const vector<BaseAction*> &WareHouse::getActionsLog() const
 }
 void WareHouse::addOrder(Order* order)
 {
-  inProcessOrders.push_back(order);
+  pendingOrders.push_back(order);
 }
 void WareHouse::addAction(BaseAction* action)
 {
@@ -99,3 +99,10 @@ int WareHouse::setVolunteerId()
     ++volunteerCounter;
     return output;
 }
+int WareHouse::setOrderId()
+{
+    int output(orderCounter);
+    ++orderCounter;
+    return output;
+}
+

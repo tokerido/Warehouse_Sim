@@ -10,7 +10,7 @@ class WareHouse;
 class Parse{
 
     public:
-        Parse (const string &configFilePath, WareHouse wareHouse);
+        Parse (const string &configFilePath, WareHouse &wareHouse);
         vector<Customer*> &getCustomersList();
         vector<Volunteer*> &getVolunteersList();
 

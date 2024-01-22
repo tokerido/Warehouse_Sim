@@ -24,7 +24,7 @@ struct Volunteer {
     int maxOrders; // Optional
 };
 
-Parse::Parse(const string &configFilePath, WareHouse wareHouse)
+Parse::Parse(const string &configFilePath, WareHouse &wareHouse)
 {
     // Specify the file path
     std::string file_path = configFilePath;
