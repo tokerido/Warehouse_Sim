@@ -90,27 +90,27 @@ Parse::Parse(const string &configFilePath, WareHouse &wareHouse)
     for (const auto& customer : customers) {
         int id = wareHouse.setCustomerId();
         if (customer.type == "soldier"){      
-            SoldierCustomer soldierCustomer(id, customer.name, customer.distance, customer.maxOrders);
-            customersList.push_back(&soldierCustomer);
+            SoldierCustomer *soldierCustomer = new SoldierCustomer(id, customer.name, customer.distance, customer.maxOrders);
+            customersList.push_back(soldierCustomer);
         } else {
-            CivilianCustomer civilianCustomer(id, customer.name, customer.distance, customer.maxOrders);
-            customersList.push_back(&civilianCustomer);
+            CivilianCustomer *civilianCustomer = new CivilianCustomer(id, customer.name, customer.distance, customer.maxOrders);
+            customersList.push_back(civilianCustomer);
         }
     }
   
     for (const auto& volunteer : volunteers) {
         int id = wareHouse.setVolunteerId();
         if (volunteer.role == "collector"){
-            CollectorVolunteer collectorVolunteer(id, volunteer.name, volunteer.coolDown);
-            volunteersList.push_back(&collectorVolunteer);
+            CollectorVolunteer *collectorVolunteer = new CollectorVolunteer(id, volunteer.name, volunteer.coolDown);
+            volunteersList.push_back(collectorVolunteer);
         } else if (volunteer.role == "limited_collector"){
-            LimitedCollectorVolunteer limitedCollectorVolunteer(id, volunteer.name, volunteer.coolDown, volunteer.maxOrders);
-            volunteersList.push_back(&limitedCollectorVolunteer);
+            LimitedCollectorVolunteer *limitedCollectorVolunteer = new LimitedCollectorVolunteer(id, volunteer.name, volunteer.coolDown, volunteer.maxOrders);
+            volunteersList.push_back(limitedCollectorVolunteer);
         } else if (volunteer.role == "driver"){
-            DriverVolunteer driverVolunteer(id, volunteer.name, volunteer.maxDistance, volunteer.distancePerStep);
-            volunteersList.push_back(&driverVolunteer);
+            DriverVolunteer *driverVolunteer = new DriverVolunteer(id, volunteer.name, volunteer.maxDistance, volunteer.distancePerStep);
+            volunteersList.push_back(driverVolunteer);
         }else {
-            LimitedDriverVolunteer limitedDriverVolunteer(id, volunteer.name, volunteer.maxDistance, volunteer.distancePerStep, volunteer.maxOrders);
+            LimitedDriverVolunteer *limitedDriverVolunteer = new LimitedDriverVolunteer(id, volunteer.name, volunteer.maxDistance, volunteer.distancePerStep, volunteer.maxOrders);
         }
     }
 }
