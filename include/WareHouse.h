@@ -19,6 +19,7 @@ class WareHouse {
         void start();
         const vector<BaseAction*> &getActionsLog() const;
         void addOrder(Order* order);
+        void addCustomer(Customer* customer); // new func
         void addAction(BaseAction* action);
         void printActionsLogs();
         Customer &getCustomer(int customerId) const;
@@ -29,7 +30,7 @@ class WareHouse {
         int setCustomerId(); // new func
         int setVolunteerId(); // new func
         int setOrderId(); //new func
-        void addCustomer(Customer* customer); // new func
+
 
     private:
         bool isOpen;

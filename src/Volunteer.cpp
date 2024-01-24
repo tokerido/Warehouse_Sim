@@ -75,7 +75,34 @@ void CollectorVolunteer::acceptOrder(const Order &order)
 }
 string CollectorVolunteer::toString() const
 {
-    //TODO
+    // print id
+    std::cout << "VoulunteerID: " << getId() << std::endl;
+
+    // print isBusy
+    bool busy = isBusy();
+    std::cout << "isBusy: " << busy << std::endl;
+
+    // print order id (if necessary)
+    if (busy)
+    {
+        std::cout << "OrderID: None" << std::endl;
+    } else
+    {
+        std::cout << "OrderID: " << getActiveOrderId() << std::endl;
+    }
+
+    // print time left
+        if (busy)
+    {
+        std::cout << "TimeLeft: None" << std::endl;
+    } else
+    {
+        std::cout << "TimeLeft: " << getTimeLeft() << std::endl;
+    }
+
+    // print orders left
+        std::cout << "OrdersLeft: No Limit" << std::endl;
+    
 }
 
 LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, string name, int coolDown ,int maxOrders): CollectorVolunteer(id, name, coolDown), maxOrders(maxOrders), ordersLeft(maxOrders){}

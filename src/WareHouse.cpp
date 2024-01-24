@@ -25,6 +25,10 @@ void WareHouse::addOrder(Order* order)
 {
   pendingOrders.push_back(order);
 }
+void WareHouse::addCustomer(Customer* customer)
+{
+    customers.push_back(customer);
+}
 void WareHouse::addAction(BaseAction* action)
 {
     //TODO
@@ -86,6 +90,7 @@ void WareHouse::close()
 void WareHouse::open()
 {
     isOpen = true;
+    // we should call all the actions here!
 }
 int WareHouse::setCustomerId()
 {
@@ -105,4 +110,5 @@ int WareHouse::setOrderId()
     ++orderCounter;
     return output;
 }
+
 

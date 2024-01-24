@@ -27,19 +27,22 @@ string BaseAction::getErrorMsg() const
 }
 
 
-SimulateStep::SimulateStep(int numOfSteps)
+SimulateStep::SimulateStep(int numOfSteps) : numOfSteps(numOfSteps){}
+
+void SimulateStep::act(WareHouse &wareHouse)
 {
-    
+
 }
 
 
 AddOrder::AddOrder(int id) : customerId(id){}
+
 void AddOrder::act(WareHouse &wareHouse)
 {
     int orderId(wareHouse.setOrderId());
     int distance(wareHouse.getCustomer(customerId).getCustomerDistance());
-    Order newOrder(orderId,customerId,distance);
-    wareHouse.addOrder(&newOrder);
+    Order *newOrder = new Order(orderId,customerId,distance);
+    wareHouse.addOrder(newOrder);
 }
 
 string AddOrder::toString() const
@@ -51,17 +54,78 @@ AddOrder *AddOrder::clone() const
     return new AddOrder(*this);//????
 }
 
-AddCustomer::AddCustomer(string customerName, string customerType, int distance, int maxOrders) : customerName(customerName),distance(distance),maxOrders(maxOrders)
+
+
+AddCustomer::AddCustomer(string customerName, string customerType, int distance, int maxOrders) : customerName(customerName),distance(distance),maxOrders(maxOrders), customerType(convert(customerType)){}
+
+const CustomerType AddCustomer::convert(string customerType)
 {
     if (customerType == "solider")
     {
-        AddCustomer::customerType = CustomerType::Soldier;
+        return CustomerType::Soldier;
+    } else {
+        return CustomerType::Civilian;
     }
     
 }
 void AddCustomer::act(WareHouse &wareHouse) 
 {
-    int CustomerId = wareHouse.setCustomerId();
+    int customerId = wareHouse.setCustomerId();
+    if (customerType == CustomerType::Soldier)
+    {
+        SoldierCustomer *newSoliderCustomer = new SoldierCustomer(customerId, customerName, distance, maxOrders);
+        wareHouse.addCustomer(newSoliderCustomer);
+    } else {
+        CivilianCustomer *newCvilianCustomer = new CivilianCustomer(customerId, customerName, distance, maxOrders);
+        wareHouse.addCustomer(newCvilianCustomer);
+    }
+}
+AddCustomer *AddCustomer::clone() const
+{
+    //TODO
+}
+string AddCustomer::toString() const
+{
+    //TODO
+}
 
-    wareHouse
+
+
+PrintOrderStatus::PrintOrderStatus(int id) : orderId(id){}
+
+void PrintOrderStatus::act(WareHouse &wareHouse)
+{
+    wareHouse.getOrder(orderId).toString();
+    // remember to make sure wareHouse throw an error if order doesn't exist
+}
+PrintOrderStatus *PrintOrderStatus::clone() const
+{
+    //TODO
+}
+string PrintOrderStatus::toString() const
+{
+    //TODO
+}
+
+
+PrintCustomerStatus::PrintCustomerStatus(int id) : customerId(id){}
+
+void PrintCustomerStatus::act(WareHouse &wareHouse)
+{
+    std::cout << "CustomerID: " << customerId << std::endl;
+    vector<int> orderIds = wareHouse.getCustomer(customerId).getOrdersIds();
+    for (int orderId : orderIds)
+    {
+        std::cout << "OrderID: " << orderId << std::endl;
+        wareHouse.getOrder(orderId).printOrderStatus();
+    }
+    // remember to make sure wareHouse throw an error if customer doesn't exist
+}
+PrintCustomerStatus *PrintCustomerStatus::clone() const
+{
+    //TODO
+}
+string PrintCustomerStatus::toString() const
+{
+    //TODO
 }

@@ -30,7 +30,8 @@ class Order {
         int getDriverId() const;
         OrderStatus getStatus() const;
         const string toString() const;
-        int getDistance() const; // new func that returns orders distunce
+        void printOrderStatus() const; // new func
+        int getDistance() const; // new func that returns orders distance
 
     private:
         const int id;
