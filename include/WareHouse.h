@@ -30,7 +30,8 @@ class WareHouse {
         int setCustomerId(); // new func
         int setVolunteerId(); // new func
         int setOrderId(); //new func
-
+        void addCustomer(Customer* customer); // new func
+        void clear(); //new function
 
     private:
         bool isOpen;

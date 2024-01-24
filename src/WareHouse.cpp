@@ -12,6 +12,75 @@ WareHouse::WareHouse(const string &configFilePath): customerCounter(1), voluntee
     customers = parse.getCustomersList();
     volunteers = parse.getVolunteersList();
 }
+//rule of 5 implement: //continue with move!!!!!!!!!!!!!!!!!!!! the 2 of rule of 5.
+//copy constructor:
+WareHouse::WareHouse(const WareHouse &other):isOpen(other.isOpen), customerCounter(other.customerCounter),volunteerCounter(other.volunteerCounter),orderCounter(other.orderCounter) {
+    for(BaseAction* action :other.actionsLog) {
+        actionsLog.push_back(action);
+    }
+    for(Volunteer* volunteer:other.volunteers) {
+        volunteers.push_back(volunteer);
+    }
+    for(Order* order:other.pendingOrders) {
+        pendingOrders.push_back(order);
+    }
+    for(Order* order:other.inProcessOrders) {
+        inProcessOrders.push_back(order);
+    }
+    for(Order* order:other.completedOrders) {
+        completedOrders.push_back(order);
+    }
+    for(Customer* customer:other.customers) {
+        customers.push_back(customer);
+    }
+}
+//Destructor:
+WareHouse::~WareHouse() {
+    clear();
+}
+// Copy Assignment Operator:
+WareHouse& WareHouse :: operator=(const WareHouse& other)
+{
+if(&other != this) 
+{
+isOpen = other.isOpen;
+customerCounter = other.customerCounter;
+volunteerCounter = other.volunteerCounter;
+customerCounter = other.customerCounter;
+clear();
+for(BaseAction* action:other.actionsLog)
+{
+    BaseAction* action_clone = action ->clone();
+    actionsLog.push_back(action_clone);
+}
+for(Volunteer* volunteer:other.volunteers)
+{
+    Volunteer* volunteer_clone = volunteer ->clone();
+    volunteers.push_back(volunteer_clone);
+}
+for(Customer* customer:other.customers)
+{
+    Customer* customer_clone = customer ->clone();
+    customers.push_back(customer_clone);
+}
+for(Order* order:other.pendingOrders)
+{
+    Order* newOrder= new Order(order->getId(),order->getCustomerId(), order->getDistance());
+    pendingOrders.push_back(newOrder);
+}
+for(Order* order:other.inProcessOrders)
+{
+    Order* newOrder= new Order(order->getId(),order->getCustomerId(), order->getDistance());
+    inProcessOrders.push_back(newOrder);
+}
+for(Order* order:other.completedOrders)
+{
+    Order* newOrder= new Order(order->getId(),order->getCustomerId(), order->getDistance());
+    completedOrders.push_back(newOrder);
+}
+
+}
+}
 void WareHouse::start()
 {
  void open();
@@ -46,6 +115,7 @@ Customer &WareHouse::getCustomer(int customerId) const
         }  
     }
     std::cout << "Customer " << customerId << " doesn't exist.";
+    //throw error
 }
 Volunteer &WareHouse::getVolunteer(int volunteerId) const
 {
@@ -55,7 +125,7 @@ Volunteer &WareHouse::getVolunteer(int volunteerId) const
             return *volunteer;
         }
     }
-    std::cout << "Volunteer " << volunteerId << " doesn't exist.";
+    std::cout << "Volunteer " << volunteerId << " doesn't exist.";  //throw error
 }
 Order &WareHouse::getOrder(int orderId) const
 {
@@ -80,7 +150,39 @@ Order &WareHouse::getOrder(int orderId) const
         }
         
     }
-    std::cout << "Order " << orderId << " doesn't exist.";
+    std::cout << "Order " << orderId << " doesn't exist.";   //throw error
+}
+void WareHouse::clear()
+{
+    while(!actionsLog.empty()) {
+        delete actionsLog.back();
+        actionsLog.pop_back();
+    }
+    while(!volunteers.empty()) {
+        delete volunteers.back();
+        volunteers.pop_back();
+    }
+    while(!pendingOrders.empty()) {
+        delete pendingOrders.back();
+        pendingOrders.pop_back();
+    }
+    while(!pendingOrders.empty()) {
+        delete pendingOrders.back();
+        pendingOrders.pop_back();
+    }
+    while(!inProcessOrders.empty()) {
+        delete inProcessOrders.back();
+        inProcessOrders.pop_back();
+    }
+     while(!completedOrders.empty()) {
+        delete completedOrders.back();
+        completedOrders.pop_back();
+    }
+    while(!customers.empty()) {
+        delete customers.back();
+        customers.pop_back();
+    }
+    
 }
 void WareHouse::close()
 {
