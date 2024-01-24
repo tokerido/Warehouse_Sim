@@ -95,8 +95,14 @@ PrintOrderStatus::PrintOrderStatus(int id) : orderId(id){}
 
 void PrintOrderStatus::act(WareHouse &wareHouse)
 {
-    wareHouse.getOrder(orderId).toString();
-    // remember to make sure wareHouse throw an error if order doesn't exist
+    try
+    {
+        wareHouse.getOrder(orderId).toString();
+    }
+    catch(const std::runtime_error& e)
+    {
+        std::cerr << e.what() << std::endl;;
+    }
 }
 PrintOrderStatus *PrintOrderStatus::clone() const
 {
@@ -112,8 +118,17 @@ PrintCustomerStatus::PrintCustomerStatus(int id) : customerId(id){}
 
 void PrintCustomerStatus::act(WareHouse &wareHouse)
 {
+    vector<int> orderIds;
+    try
+    {
+        orderIds = wareHouse.getCustomer(customerId).getOrdersIds();
+    }
+    catch(const std::runtime_error& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+     
     std::cout << "CustomerID: " << customerId << std::endl;
-    vector<int> orderIds = wareHouse.getCustomer(customerId).getOrdersIds();
     for (int orderId : orderIds)
     {
         std::cout << "OrderID: " << orderId << std::endl;

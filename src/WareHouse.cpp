@@ -114,8 +114,7 @@ Customer &WareHouse::getCustomer(int customerId) const
             return *customer;
         }  
     }
-    std::cout << "Customer " << customerId << " doesn't exist.";
-    //throw error
+    throw std::runtime_error("Customer doesn't exist");
 }
 Volunteer &WareHouse::getVolunteer(int volunteerId) const
 {
@@ -125,7 +124,7 @@ Volunteer &WareHouse::getVolunteer(int volunteerId) const
             return *volunteer;
         }
     }
-    std::cout << "Volunteer " << volunteerId << " doesn't exist.";  //throw error
+    throw std::runtime_error("Volunteer doesn't exist");
 }
 Order &WareHouse::getOrder(int orderId) const
 {
@@ -134,23 +133,20 @@ Order &WareHouse::getOrder(int orderId) const
         {
             return *order;
         }
-        
     }
     for (const auto& order : inProcessOrders){
         if (order->getId() == orderId)
         {
             return *order;
         }
-        
     }
     for (const auto& order : completedOrders){
         if (order->getId() == orderId)
         {
             return *order;
         }
-        
     }
-    std::cout << "Order " << orderId << " doesn't exist.";   //throw error
+    throw std::runtime_error("Order doesn't exist");
 }
 void WareHouse::clear()
 {
