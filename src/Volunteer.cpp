@@ -35,6 +35,7 @@ CollectorVolunteer *CollectorVolunteer::clone() const
 void CollectorVolunteer::step()
 {
     if (timeLeft != 0 && decreaseCoolDown()){
+        completedOrderId = activeOrderId;
         activeOrderId = NO_ORDER;
     }
 }
@@ -75,34 +76,42 @@ void CollectorVolunteer::acceptOrder(const Order &order)
 }
 string CollectorVolunteer::toString() const
 {
+    string output;
     // print id
-    std::cout << "VoulunteerID: " << getId() << std::endl;
+    output += "VoulunteerID: " + getId();
+    output += "\n";
 
     // print isBusy
     bool busy = isBusy();
-    std::cout << "isBusy: " << busy << std::endl;
+    output += "isBusy: " + busy;
+    output += "\n";
 
     // print order id (if necessary)
-    if (busy)
+    if (!busy)
     {
-        std::cout << "OrderID: None" << std::endl;
+        output += "OrderID: None";
+        output += "\n";
     } else
     {
-        std::cout << "OrderID: " << getActiveOrderId() << std::endl;
+        output += "OrderID: " + getActiveOrderId();
+        output += "\n";
     }
 
     // print time left
-        if (busy)
+        if (!busy)
     {
-        std::cout << "TimeLeft: None" << std::endl;
+        output += "TimeLeft: None";
+        output += "\n";
     } else
     {
-        std::cout << "TimeLeft: " << getTimeLeft() << std::endl;
+        output += "TimeLeft: " + getTimeLeft();
+        output += "\n";
     }
 
     // print orders left
-        std::cout << "OrdersLeft: No Limit" << std::endl;
-    
+        output += "OrdersLeft: No Limit";
+        
+    return output;
 }
 
 LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, string name, int coolDown ,int maxOrders): CollectorVolunteer(id, name, coolDown), maxOrders(maxOrders), ordersLeft(maxOrders){}
@@ -133,7 +142,43 @@ int LimitedCollectorVolunteer::getNumOrdersLeft() const
 }
 string LimitedCollectorVolunteer::toString() const
 {
-    //TODO
+    string output;
+    // print id
+    output += "VoulunteerID: " + getId();
+    output += "\n";
+
+    // print isBusy
+    bool busy = isBusy();
+    output += "isBusy: " + busy;
+    output += "\n";
+
+    // print order id (if necessary)
+    if (!busy)
+    {
+        output += "OrderID: None";
+        output += "\n";
+    } else
+    {
+        output += "OrderID: " + getActiveOrderId();
+        output += "\n";
+    }
+
+    // print time left
+        if (!busy)
+    {
+        output += "TimeLeft: None";
+        output += "\n";
+    } else
+    {
+        output += "TimeLeft: " + getTimeLeft();
+        output += "\n";
+    }
+
+    // print orders left
+        output += "OrdersLeft: " + ordersLeft;
+        output += "\n";
+        
+    return output;
 }
 
 
@@ -187,13 +232,49 @@ void DriverVolunteer::acceptOrder(const Order &order)
 void DriverVolunteer::step()
 {
     if (distanceLeft > 0 && decreaseDistanceLeft()){
+        completedOrderId = activeOrderId;
         activeOrderId = NO_ORDER;
         distanceLeft = 0;
     }
 }
 string DriverVolunteer::toString() const
 {
-    //TODO
+    string output;
+    // print id
+    output += "VoulunteerID: " + getId();
+    output += "\n";
+
+    // print isBusy
+    bool busy = isBusy();
+    output += "isBusy: " + busy;
+    output += "\n";
+
+    // print order id (if necessary)
+    if (!busy)
+    {
+        output += "OrderID: None";
+        output += "\n";
+    } else
+    {
+        output += "OrderID: " + getActiveOrderId();
+        output += "\n";
+    }
+
+    // print time left
+        if (!busy)
+    {
+        output += "TimeLeft: None";
+        output += "\n";
+    } else
+    {
+        output += "TimeLeft: " + getDistanceLeft();
+        output += "\n";
+    }
+
+    // print orders left
+        output += "OrdersLeft: No Limit";
+
+    return output;
 }
 
 
@@ -225,5 +306,41 @@ void LimitedDriverVolunteer::acceptOrder(const Order &order)
 }
 string LimitedDriverVolunteer::toString() const
 {
-    //TODO
+    string output;
+    // print id
+    output += "VoulunteerID: " + getId();
+    output += "\n";
+
+    // print isBusy
+    bool busy = isBusy();
+    output += "isBusy: " + busy;
+    output += "\n";
+
+    // print order id (if necessary)
+    if (!busy)
+    {
+        output += "OrderID: None";
+        output += "\n";
+    } else
+    {
+        output += "OrderID: " + getActiveOrderId();
+        output += "\n";
+    }
+
+    // print time left
+        if (!busy)
+    {
+        output += "TimeLeft: None";
+        output += "\n";
+    } else
+    {
+        output += "TimeLeft: " + getDistanceLeft();
+        output += "\n";
+    }
+
+    // print orders left
+        output += "OrdersLeft: " + ordersLeft;
+        output += "\n";
+
+    return output;
 }

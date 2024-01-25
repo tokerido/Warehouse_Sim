@@ -37,7 +37,55 @@ OrderStatus Order::getStatus() const
 }
 const string Order::toString() const
 {
-    //TODO
+    string output;
+    output += "OrderId: " + id;
+    output += "\n";
+
+    output += printOrderStatus(); 
+    output += "\n";
+
+    output += "CustomerID: " + getCustomerId();
+    output += "\n";
+
+    output += "Collector: ";
+    if (getCollectorId() != NO_VOLUNTEER)
+    {
+        output += getCollectorId();
+    } else
+    {
+        output += "None";
+    }
+    output += "\n";
+    
+    output += "Driver: ";
+    if (getDriverId() != NO_VOLUNTEER)
+    {
+        output += getDriverId();
+    } else
+    {
+        output += "None";
+    }
+
+    return output;
+}
+const string Order::printOrderStatus() const
+{
+    string output = "OrderStatus: ";
+    if (this->status == OrderStatus::PENDING)
+    {
+        output += "PENDING";
+    } else if (this->status == OrderStatus::COLLECTING)
+    {
+        output += "COLLECTING";
+    } else if (this->status == OrderStatus::DELIVERING)
+    {
+        output += "DELIVERING";
+    } else
+    {
+        output += "COMPLETED";
+    }
+
+    return output;
 }
 int Order::getDistance() const
 {
