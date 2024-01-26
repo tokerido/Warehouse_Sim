@@ -88,7 +88,7 @@ void WareHouse::start()
 }
 const vector<BaseAction*> &WareHouse::getActionsLog() const
 {
-    //TODO
+    return actionsLog;
 }
 void WareHouse::addOrder(Order* order)
 {

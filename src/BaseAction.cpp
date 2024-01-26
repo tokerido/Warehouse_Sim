@@ -3,7 +3,7 @@
 #include "../include/Volunteer.h"
 #include <iostream>
 
-
+extern WareHouse* backup;
 
 BaseAction::BaseAction()
 {
@@ -36,7 +36,15 @@ void SimulateStep::act(WareHouse &wareHouse)
 }
 string SimulateStep::toString() const
 {
-    //todo
+    string output = "simulateStep " + numOfSteps;
+
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    } 
 } 
 SimulateStep *SimulateStep::clone() const
 {
@@ -63,16 +71,20 @@ void AddOrder::act(WareHouse &wareHouse)
     {
         error("”Cannot place this order");
         std::cerr << e.what() << '\n';
-    }
-    
-
-    
-    
+    }   
 }
 
 string AddOrder::toString() const
 {
-    //todo
+    string output = "order " + customerId;
+
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    }   
 } 
 AddOrder *AddOrder::clone() const
 {
@@ -112,7 +124,25 @@ AddCustomer *AddCustomer::clone() const
 }
 string AddCustomer::toString() const
 {
-    //TODO
+    string output = "customer " + customerName;
+
+    if (customerType == CustomerType::Civilian)
+    {
+        output += " civilian ";
+    } else
+    {
+        output += " solider ";
+    }
+    output += distance;
+    output += " ";
+    output += maxOrders;
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    } 
 }
 
 
@@ -134,6 +164,7 @@ void PrintOrderStatus::act(WareHouse &wareHouse)
     catch(const std::runtime_error& e)
     {
         error("“Order doesn't exist");
+        wareHouse.addAction(this);
         std::cerr << e.what() << std::endl;;
     }
 }
@@ -143,7 +174,15 @@ PrintOrderStatus *PrintOrderStatus::clone() const
 }
 string PrintOrderStatus::toString() const
 {
-    //TODO
+    string output = "orderStatus " + orderId;
+
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    }
 }
 
 
@@ -175,6 +214,7 @@ void PrintCustomerStatus::act(WareHouse &wareHouse)
     catch(const std::runtime_error& e)
     {
         error("Customer doesn't exist");
+        wareHouse.addAction(this);
         std::cerr << e.what() << std::endl;
     }
 
@@ -186,7 +226,15 @@ PrintCustomerStatus *PrintCustomerStatus::clone() const
 }
 string PrintCustomerStatus::toString() const
 {
-    //TODO
+    string output = "customerStatus " + customerId;
+
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    }
 }
 
 
@@ -207,7 +255,8 @@ void PrintVolunteerStatus::act(WareHouse &wareHouse)
     catch(const std::runtime_error& e)
     {
         error("Volunteer doesn't exist");
-        std::cerr << e.what() << std::endl;;
+        wareHouse.addAction(this);
+        std::cerr << e.what() << std::endl;
     }
  
 }
@@ -217,7 +266,15 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const
 }
 string PrintVolunteerStatus::toString() const
 {
-    //TODO
+    string output = "volunteerStatus " + VolunteerId;
+
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    }
 }
 
 
@@ -244,5 +301,107 @@ PrintActionsLog *PrintActionsLog::clone() const
 }
 string PrintActionsLog::toString() const
 {
+    string output = "log ";
+
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    }
+}
+
+
+Close::Close(){};
+
+void Close::act(WareHouse &wareHouse)
+{
+    complete();
+    wareHouse.addAction(this);
+    wareHouse.close();
+    // make sure warehouse.close() do all the printing, free the memory and exit!!!
+}
+string Close::toString() const
+{
+        string output = "close";
+
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    }
+}
+
+
+BackupWareHouse::BackupWareHouse(){};
+
+void BackupWareHouse::act(WareHouse &wareHouse)
+{
+    delete backup;
+    backup = nullptr;
+    backup = new WareHouse(wareHouse);
+    complete();
+    backup->addAction(this);
+}
+BackupWareHouse *BackupWareHouse::clone() const
+{
     //TODO
+}
+string BackupWareHouse::toString() const
+{
+    string output = "backup ";
+
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    }
+}
+
+
+RestoreWareHouse::RestoreWareHouse(){}
+
+void RestoreWareHouse::act(WareHouse &wareHouse)
+{
+
+    try
+    {
+        if(backup == nullptr)
+        {
+            throw "No backup available";
+        } else
+        {
+            wareHouse.clear(); // make sure clear() delete everything
+            wareHouse = *backup; // make sure operator "=" copies everything correctly
+            complete();
+            wareHouse.addAction(this);
+        }   
+    }
+    catch(const std::exception& e)
+    {
+        error("No backup available");
+        wareHouse.addAction(this);
+        std::cerr << e.what() << '\n';
+    }
+}
+RestoreWareHouse *RestoreWareHouse::clone() const
+{
+    //TODO
+}
+string RestoreWareHouse::toString() const
+{
+    string output = "restore ";
+
+    if (getStatus() == ActionStatus::COMPLETED)
+    {
+        return output + " Completed";
+    } else
+    {
+        return output + " Error: " + getErrorMsg();
+    }
 }
