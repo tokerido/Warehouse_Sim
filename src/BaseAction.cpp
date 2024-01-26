@@ -32,7 +32,13 @@ SimulateStep::SimulateStep(int numOfSteps) : numOfSteps(numOfSteps){}
 
 void SimulateStep::act(WareHouse &wareHouse)
 {
-    //TODO
+    for (size_t i = 0; i < numOfSteps; i++)
+    {
+        wareHouse.simulateStep(); // make sure simulatestep is done corectlly
+    }
+    
+    complete();
+    wareHouse.addAction(this);
 }
 string SimulateStep::toString() const
 {
@@ -156,6 +162,7 @@ void PrintOrderStatus::act(WareHouse &wareHouse)
     try
     {
         output = wareHouse.getOrder(orderId).toString();
+
         std::cout << output << std::endl;
 
         complete();
@@ -282,16 +289,7 @@ PrintActionsLog::PrintActionsLog(){}
 
 void PrintActionsLog::act(WareHouse &wareHouse)
 {
-    string output;
-    vector<BaseAction*> actionsLog = wareHouse.getActionsLog();
-    for(BaseAction *action : actionsLog)
-    {
-        output += action->toString();
-        output += "\n";
-    }
-
-    std::cout << output << std::endl;
-
+    wareHouse.printActionsLogs();
     complete();
     wareHouse.addAction(this);
 }
@@ -368,7 +366,6 @@ RestoreWareHouse::RestoreWareHouse(){}
 
 void RestoreWareHouse::act(WareHouse &wareHouse)
 {
-
     try
     {
         if(backup == nullptr)

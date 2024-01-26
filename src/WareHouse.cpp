@@ -5,6 +5,7 @@
 #include "../include/Customer.h"
 #include "../include/Order.h"
 #include <iostream>
+#include <algorithm>
 
 WareHouse::WareHouse(const string &configFilePath): customerCounter(1), volunteerCounter(1), isOpen(false)
 {
@@ -100,11 +101,17 @@ void WareHouse::addCustomer(Customer* customer)
 }
 void WareHouse::addAction(BaseAction* action)
 {
-    //TODO
+    actionsLog.push_back(action);
 }
 void WareHouse::printActionsLogs()
 {
-    //TODO
+    string output;
+    for(BaseAction *action : actionsLog)
+    {
+        output += action->toString();
+        output += "\n";
+    }
+    std::cout << output << std::endl;
 }
 Customer &WareHouse::getCustomer(int customerId) const
 {
@@ -208,5 +215,36 @@ int WareHouse::setOrderId()
     ++orderCounter;
     return output;
 }
-
+void WareHouse::simulateStep()
+{
+    vector<Order*>::iterator itPending = pendingOrders.begin();
+    for (Order *order : pendingOrders)
+    {
+        if (order->getStatus() == OrderStatus::PENDING)
+        {
+            for (Volunteer *volunteer : volunteers)
+            {
+                if (volunteer->canTakeOrder(*order))
+                {
+                    volunteer->acceptOrder(*order);
+                    inProcessOrders.push_back(*pendingOrders.erase(it)); // i hope it does the right trick  
+                }
+            } 
+        }
+        
+        if (order->getStatus() == OrderStatus::COLLECTING)
+        {
+            for (Volunteer *volunteer : volunteers)
+            {
+                if (volunteer->canTakeOrder(*order))
+                {
+                    volunteer->acceptOrder(*order);
+                    inProcessOrders.push_back(*pendingOrders.erase(it)); // i hope it does the right trick  
+                }
+            } 
+        }
+        ++itPending;
+    }
+    
+}
 
