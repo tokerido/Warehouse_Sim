@@ -3,7 +3,12 @@
 #include "../include/Order.h"
 #include <iostream>
 
+//Volunteer constructor
 Volunteer::Volunteer(int id, const string &name) : id(id), name(name), completedOrderId(NO_ORDER), activeOrderId(NO_ORDER) {}
+//volunteer copy constuctor
+Volunteer::Volunteer(const Volunteer &other):id(other.id), name(other.name), completedOrderId(NO_ORDER),activeOrderId(NO_ORDER){}
+//Volunteer destructor
+virtual Volunteer:: ~Volunteer() = default;
 int Volunteer::getId() const
 {
     return id;
@@ -117,7 +122,7 @@ string CollectorVolunteer::toString() const
 LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, string name, int coolDown ,int maxOrders): CollectorVolunteer(id, name, coolDown), maxOrders(maxOrders), ordersLeft(maxOrders){}
 LimitedCollectorVolunteer *LimitedCollectorVolunteer::clone() const
 {
-    //TODO
+    return new LimitedCollectorVolunteer(*this);
 }
 bool LimitedCollectorVolunteer::hasOrdersLeft() const
 {
@@ -187,7 +192,7 @@ string LimitedCollectorVolunteer::toString() const
 DriverVolunteer::DriverVolunteer(int id, string name, int maxDistance, int distancePerStep): Volunteer(id, name), maxDistance(maxDistance), distancePerStep(distancePerStep), distanceLeft(0){}
 DriverVolunteer *DriverVolunteer::clone() const
 {
-    //TODO
+    return new DriverVolunteer(*this);
 }
 int DriverVolunteer::getDistanceLeft() const
 {
@@ -281,7 +286,7 @@ string DriverVolunteer::toString() const
 LimitedDriverVolunteer::LimitedDriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep,int maxOrders): DriverVolunteer(id, name, maxDistance, distancePerStep), maxOrders(maxOrders), ordersLeft(maxOrders){}
 LimitedDriverVolunteer *LimitedDriverVolunteer:: clone() const
 {
-    //TODO
+     return new LimitedDriverVolunteer(*this);
 }
 int LimitedDriverVolunteer::getMaxOrders() const
 {

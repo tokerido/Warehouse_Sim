@@ -13,32 +13,36 @@ WareHouse::WareHouse(const string &configFilePath): customerCounter(1), voluntee
     customers = parse.getCustomersList();
     volunteers = parse.getVolunteersList();
 }
-//rule of 5 implement: //continue with move!!!!!!!!!!!!!!!!!!!! the 2 of rule of 5.
+//rule of 5 implement:
 //copy constructor:
 WareHouse::WareHouse(const WareHouse &other):isOpen(other.isOpen), customerCounter(other.customerCounter),volunteerCounter(other.volunteerCounter),orderCounter(other.orderCounter) {
     for(BaseAction* action :other.actionsLog) {
-        actionsLog.push_back(action);
+        actionsLog.push_back(action->clone());
     }
     for(Volunteer* volunteer:other.volunteers) {
-        volunteers.push_back(volunteer);
+        volunteers.push_back(volunteer->clone());
     }
     for(Order* order:other.pendingOrders) {
-        pendingOrders.push_back(order);
+        Order* newOrder= new Order(order->getId(),order->getCustomerId(), order->getDistance());
+        pendingOrders.push_back(newOrder);
     }
     for(Order* order:other.inProcessOrders) {
-        inProcessOrders.push_back(order);
+        Order* newOrder= new Order(order->getId(),order->getCustomerId(), order->getDistance());
+        inProcessOrders.push_back(newOrder);
     }
     for(Order* order:other.completedOrders) {
-        completedOrders.push_back(order);
+        Order* newOrder= new Order(order->getId(),order->getCustomerId(), order->getDistance());
+        completedOrders.push_back(newOrder);
     }
     for(Customer* customer:other.customers) {
-        customers.push_back(customer);
+        customers.push_back(customer->clone());
     }
 }
 //Destructor:
 WareHouse::~WareHouse() {
     clear();
 }
+
 // Copy Assignment Operator:
 WareHouse& WareHouse :: operator=(const WareHouse& other)
 {
@@ -51,18 +55,15 @@ customerCounter = other.customerCounter;
 clear();
 for(BaseAction* action:other.actionsLog)
 {
-    BaseAction* action_clone = action ->clone();
-    actionsLog.push_back(action_clone);
+    actionsLog.push_back(action ->clone());
 }
 for(Volunteer* volunteer:other.volunteers)
 {
-    Volunteer* volunteer_clone = volunteer ->clone();
-    volunteers.push_back(volunteer_clone);
+    volunteers.push_back(volunteer ->clone());
 }
 for(Customer* customer:other.customers)
 {
-    Customer* customer_clone = customer ->clone();
-    customers.push_back(customer_clone);
+    customers.push_back(customer ->clone());
 }
 for(Order* order:other.pendingOrders)
 {
@@ -82,6 +83,14 @@ for(Order* order:other.completedOrders)
 
 }
 }
+ //continue with move!!!!!!!!!!!!!!!!!!!! the 2 of rule of 5.
+ WareHouse::WareHouse(WareHouse&& other)
+    : isOpen(other.isOpen), customerCounter(other.customerCounter),volunteerCounter(other.volunteerCounter),orderCounter(other.orderCounter) 
+    {
+//TODO
+    }
+
+
 void WareHouse::start()
 {
  void open();

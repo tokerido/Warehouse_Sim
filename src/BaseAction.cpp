@@ -34,7 +34,7 @@ void SimulateStep::act(WareHouse &wareHouse)
 {
     for (size_t i = 0; i < numOfSteps; i++)
     {
-        wareHouse.simulateStep(); // make sure simulatestep is done corectlly
+        wareHouse.simulateStep(1); // make sure simulatestep is done corectlly
     }
     
     complete();
