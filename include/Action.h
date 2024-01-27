@@ -13,7 +13,6 @@ enum class CustomerType{
     Soldier, Civilian
 };
 
-
 class Customer;
 
 class BaseAction{
@@ -23,6 +22,7 @@ class BaseAction{
         virtual void act(WareHouse& wareHouse)=0;
         virtual string toString() const=0;
         virtual BaseAction* clone() const=0;
+        virtual ~BaseAction(); // virual destructor
 
     protected:
         void complete();
@@ -59,12 +59,11 @@ class AddOrder : public BaseAction {
 
 class AddCustomer : public BaseAction {
     public:
-        AddCustomer(string customerName, string customerType, int distance, int maxOrders);
+        AddCustomer(const string &customerName, const string &customerType, int distance, int maxOrders);
         const CustomerType convert(string customerType); // new func        
         void act(WareHouse &wareHouse) override;
         AddCustomer *clone() const override;
         string toString() const override;
-
     private:
         const string customerName;
         const CustomerType customerType;
@@ -102,7 +101,7 @@ class PrintVolunteerStatus : public BaseAction {
         PrintVolunteerStatus *clone() const override;
         string toString() const override;
     private:
-        const int VolunteerId;
+        const int volunteerId;
 };
 
 
@@ -119,6 +118,7 @@ class Close : public BaseAction {
     public:
         Close();
         void act(WareHouse &wareHouse) override;
+        Close *clone() const override;
         string toString() const override;
     private:
 };

@@ -1,4 +1,4 @@
-#include "../include/BaseAction.h"
+#include "../include/Action.h"
 #include "../include/WareHouse.h"
 #include "../include/Volunteer.h"
 #include <iostream>
@@ -34,7 +34,7 @@ void SimulateStep::act(WareHouse &wareHouse)
 {
     for (size_t i = 0; i < numOfSteps; i++)
     {
-        wareHouse.simulateStep(1); // make sure simulatestep is done corectlly
+        wareHouse.simulateStep(); // make sure simulatestep is done corectlly
     }
     
     complete();
@@ -99,7 +99,7 @@ AddOrder *AddOrder::clone() const
 
 
 
-AddCustomer::AddCustomer(string customerName, string customerType, int distance, int maxOrders) : customerName(customerName),distance(distance),maxOrders(maxOrders), customerType(convert(customerType)){}
+AddCustomer::AddCustomer(const string &customerName, const string &customerType, int distance, int maxOrders) : customerName(customerName),distance(distance),maxOrders(maxOrders), customerType(convert(customerType)){}
 
 const CustomerType AddCustomer::convert(string customerType)
 {
@@ -126,7 +126,7 @@ void AddCustomer::act(WareHouse &wareHouse)
 }
 AddCustomer *AddCustomer::clone() const
 {
-    //TODO
+    return new AddCustomer(*this);
 }
 string AddCustomer::toString() const
 {
@@ -177,7 +177,7 @@ void PrintOrderStatus::act(WareHouse &wareHouse)
 }
 PrintOrderStatus *PrintOrderStatus::clone() const
 {
-    //TODO
+    return new PrintOrderStatus(*this);
 }
 string PrintOrderStatus::toString() const
 {
@@ -229,7 +229,7 @@ void PrintCustomerStatus::act(WareHouse &wareHouse)
 }
 PrintCustomerStatus *PrintCustomerStatus::clone() const
 {
-    //TODO
+    
 }
 string PrintCustomerStatus::toString() const
 {
@@ -245,14 +245,14 @@ string PrintCustomerStatus::toString() const
 }
 
 
-PrintVolunteerStatus::PrintVolunteerStatus(int id) : VolunteerId(id){}
+PrintVolunteerStatus::PrintVolunteerStatus(int id) : volunteerId(id){}
 
 void PrintVolunteerStatus::act(WareHouse &wareHouse)
 {
     string output;
     try
     {
-        output = wareHouse.getVolunteer(VolunteerId).toString();
+        output = wareHouse.getVolunteer(volunteerId).toString();
         
         std::cout << output << std::endl;   
         
@@ -269,11 +269,11 @@ void PrintVolunteerStatus::act(WareHouse &wareHouse)
 }
 PrintVolunteerStatus *PrintVolunteerStatus::clone() const
 {
-    //TODO
+    return new PrintVolunteerStatus(*this);
 }
 string PrintVolunteerStatus::toString() const
 {
-    string output = "volunteerStatus " + VolunteerId;
+    string output = "volunteerStatus " + volunteerId;
 
     if (getStatus() == ActionStatus::COMPLETED)
     {
@@ -295,7 +295,7 @@ void PrintActionsLog::act(WareHouse &wareHouse)
 }
 PrintActionsLog *PrintActionsLog::clone() const
 {
-    //TODO
+    return new PrintActionsLog(*this);
 }
 string PrintActionsLog::toString() const
 {
@@ -346,7 +346,7 @@ void BackupWareHouse::act(WareHouse &wareHouse)
 }
 BackupWareHouse *BackupWareHouse::clone() const
 {
-    //TODO
+    return new BackupWareHouse(*this);
 }
 string BackupWareHouse::toString() const
 {
@@ -388,7 +388,7 @@ void RestoreWareHouse::act(WareHouse &wareHouse)
 }
 RestoreWareHouse *RestoreWareHouse::clone() const
 {
-    //TODO
+    return new RestoreWareHouse(*this);
 }
 string RestoreWareHouse::toString() const
 {

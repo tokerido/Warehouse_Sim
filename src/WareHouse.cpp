@@ -1,6 +1,6 @@
 #include "../include/WareHouse.h"
 #include "../include/Parse.h"
-#include "../include/BaseAction.h"
+#include "../include/Action.h"
 #include "../include/Volunteer.h"
 #include "../include/Customer.h"
 #include "../include/Order.h"
@@ -226,6 +226,7 @@ int WareHouse::setOrderId()
 }
 void WareHouse::simulateStep()
 {
+    // assign orders
     vector<Order*>::iterator itPending = pendingOrders.begin();
     for (Order *order : pendingOrders)
     {
@@ -236,7 +237,7 @@ void WareHouse::simulateStep()
                 if (volunteer->canTakeOrder(*order))
                 {
                     volunteer->acceptOrder(*order);
-                    inProcessOrders.push_back(*pendingOrders.erase(it)); // i hope it does the right trick  
+                    inProcessOrders.push_back(*pendingOrders.erase(itPending)); // i hope it does the right trick  
                 }
             } 
         }
@@ -248,12 +249,46 @@ void WareHouse::simulateStep()
                 if (volunteer->canTakeOrder(*order))
                 {
                     volunteer->acceptOrder(*order);
-                    inProcessOrders.push_back(*pendingOrders.erase(it)); // i hope it does the right trick  
+                    inProcessOrders.push_back(*pendingOrders.erase(itPending)); // i hope it does the right trick  
                 }
             } 
         }
         ++itPending;
     }
-    
-}
 
+    // preform a step
+    vector<Volunteer*>::iterator itVolunteers = volunteers.begin();
+    for (Volunteer *volunteer : volunteers)
+    {
+        if (volunteer->isBusy())
+        {
+            volunteer->step();
+            if (!(volunteer->isBusy()))
+            {
+                int orderId = volunteer->getCompletedOrderId();
+                vector<Order*>::iterator itInProcess = inProcessOrders.begin();
+                for (Order *order : inProcessOrders){
+                    if (order->getId() == orderId)
+                    {
+                        if (order->getStatus() == OrderStatus::COLLECTING)
+                        {
+                            pendingOrders.push_back(*inProcessOrders.erase(itInProcess)); // i hope it does the right trick  
+                        } else
+                        {
+                            completedOrders.push_back(*inProcessOrders.erase(itInProcess)); // i hope it does the right trick  
+                        }
+                        break;
+                    }
+                    ++itInProcess;
+                }
+                if (!(volunteer->hasOrdersLeft()))
+                {
+                    delete volunteer;
+                    volunteers.erase(itVolunteers);
+                }
+            }
+        
+        }
+        ++itVolunteers; 
+    }
+}

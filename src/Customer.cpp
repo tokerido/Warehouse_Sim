@@ -7,7 +7,7 @@ Customer::Customer(int id, const string &name, int locationDistance, int maxOrde
 // copy consturctor
 Customer::Customer(const Customer &other) : id(other.id), name(other.name),locationDistance(other.locationDistance), maxOrders(other.maxOrders) {}
 // destructor
-virtual Customer:: ~Customer() = default;
+Customer:: ~Customer() = default;
 //getters 
 const string &Customer:: getName() const
 {
@@ -55,8 +55,7 @@ SoldierCustomer::SoldierCustomer(int id, string name, int locationDistance, int 
 SoldierCustomer *SoldierCustomer::clone() const {
     return new SoldierCustomer(*this);
 }
-//destructor
-//virtual SoliderCustomer::~SoliderCustomer() = default;
+
 //Civilian Customer
 //contructor
 CivilianCustomer::CivilianCustomer(int id, string name, int locationDistance, int maxOrders)
@@ -64,7 +63,6 @@ CivilianCustomer::CivilianCustomer(int id, string name, int locationDistance, in
 CivilianCustomer *CivilianCustomer::clone() const {
     return new CivilianCustomer(*this);
 }
-//destructor
-//virtual CivilianCustomer::~CivilianCustomer() = default;
+
 
 

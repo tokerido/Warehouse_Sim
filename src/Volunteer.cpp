@@ -8,7 +8,7 @@ Volunteer::Volunteer(int id, const string &name) : id(id), name(name), completed
 //volunteer copy constuctor
 Volunteer::Volunteer(const Volunteer &other):id(other.id), name(other.name), completedOrderId(NO_ORDER),activeOrderId(NO_ORDER){}
 //Volunteer destructor
-virtual Volunteer:: ~Volunteer() = default;
+Volunteer:: ~Volunteer() = default;
 int Volunteer::getId() const
 {
     return id;

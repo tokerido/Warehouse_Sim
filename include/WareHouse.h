@@ -31,7 +31,7 @@ class WareHouse {
         int setVolunteerId(); // new func
         int setOrderId(); //new func
         void clear(); //new function
-        void simulateStep(int steps); // new func
+        void simulateStep(); // new func
 
     private:
         bool isOpen;
