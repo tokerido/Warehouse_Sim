@@ -8,14 +8,14 @@
 #include "../include/Customer.h"
 #include "../include/Volunteer.h"
 
-struct Customer {
+struct CustomerStruct {
     std::string name;
     std::string type;
     int distance;
     int maxOrders;
 };
 
-struct Volunteer {
+struct VolunteerStruct {
     std::string name;
     std::string role;
     int coolDown; // Only for collectors
@@ -43,8 +43,8 @@ Parse::Parse(const string &configFilePath, WareHouse &wareHouse)
     }
 
     // Create vectors to store data
-    std::vector<Customer> customers;
-    std::vector<Volunteer> volunteers;
+    std::vector<CustomerStruct> customers;
+    std::vector<VolunteerStruct> volunteers;
 
     std::string line;
 
@@ -57,11 +57,11 @@ Parse::Parse(const string &configFilePath, WareHouse &wareHouse)
         iss >> type;
 
         if (type == "customer") {
-            Customer customer;
+            CustomerStruct customer;
             iss >> customer.name >> customer.type >> customer.distance >> customer.maxOrders;
             customers.push_back(customer);
         } else if (type == "volunteer") {
-            Volunteer volunteer;
+            VolunteerStruct volunteer;
             iss >> volunteer.name >> volunteer.role;
 
             if (volunteer.role == "driver" | volunteer.role == "limited_driver") {

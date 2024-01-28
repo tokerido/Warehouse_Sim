@@ -5,10 +5,7 @@
 
 extern WareHouse* backup;
 
-BaseAction::BaseAction()
-{
-    //TODO
-}
+BaseAction::BaseAction(): errorMsg(""), status(ActionStatus::ERROR){}
 ActionStatus BaseAction::getStatus() const
 {
     return status;
@@ -94,7 +91,7 @@ string AddOrder::toString() const
 } 
 AddOrder *AddOrder::clone() const
 {
-    return new AddOrder(*this);//????
+    return new AddOrder(*this);
 }
 
 
@@ -229,7 +226,7 @@ void PrintCustomerStatus::act(WareHouse &wareHouse)
 }
 PrintCustomerStatus *PrintCustomerStatus::clone() const
 {
-    
+    return new PrintCustomerStatus(*this);
 }
 string PrintCustomerStatus::toString() const
 {

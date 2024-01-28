@@ -16,6 +16,9 @@ class WareHouse {
 
     public:
         WareHouse(const string &configFilePath);
+        WareHouse(WareHouse &other);
+        WareHouse(WareHouse &&other);
+        WareHouse &operator=(WareHouse &other);
         void start();
         const vector<BaseAction*> &getActionsLog() const;
         void addOrder(Order* order);
@@ -32,6 +35,7 @@ class WareHouse {
         int setOrderId(); //new func
         void clear(); //new function
         void simulateStep(); // new func
+        ~WareHouse();
 
     private:
         bool isOpen;

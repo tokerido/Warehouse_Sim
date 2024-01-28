@@ -11,6 +11,7 @@ class Order;
 class Customer {
     public:
         Customer(int id, const string &name, int locationDistance, int maxOrders);
+        Customer(const Customer &other); //copy constructor
         const string &getName() const;
         int getId() const;
         int getCustomerDistance() const;
