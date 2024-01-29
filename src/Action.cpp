@@ -23,15 +23,16 @@ string BaseAction::getErrorMsg() const
 {
     return errorMsg;
 }
+BaseAction:: ~BaseAction() = default;
 
 
-SimulateStep::SimulateStep(int numOfSteps) : numOfSteps(numOfSteps){}
+SimulateStep::SimulateStep(int numOfSteps) : BaseAction(), numOfSteps(numOfSteps){}
 
 void SimulateStep::act(WareHouse &wareHouse)
 {
-    for (size_t i = 0; i < numOfSteps; i++)
+    for (int i = 0; i < numOfSteps; i++)
     {
-        wareHouse.simulateStep(); // make sure simulatestep is done corectlly
+        wareHouse.simulateOneStep(); // make sure simulatestep is done corectlly
     }
     
     complete();
@@ -39,19 +40,19 @@ void SimulateStep::act(WareHouse &wareHouse)
 }
 string SimulateStep::toString() const
 {
-    string output = "simulateStep " + numOfSteps;
+    string output = "simulateStep " + std::to_string(numOfSteps);
 
     if (getStatus() == ActionStatus::COMPLETED)
     {
-        return output + " Completed";
+        return output += " Completed";
     } else
     {
-        return output + " Error: " + getErrorMsg();
+        return output += " Error: " + getErrorMsg();
     } 
 } 
 SimulateStep *SimulateStep::clone() const
 {
-    return new SimulateStep(*this);//????
+    return new SimulateStep(*this);
 }
 
 
@@ -60,33 +61,51 @@ AddOrder::AddOrder(int id) : customerId(id){}
 void AddOrder::act(WareHouse &wareHouse)
 {
     int distance;
+    bool maxorders = false;
     try
     {
-       distance = wareHouse.getCustomer(customerId).getCustomerDistance();
-       int orderId(wareHouse.setOrderId());
-       Order *newOrder = new Order(orderId,customerId,distance);
-       wareHouse.addOrder(newOrder);
+        if(wareHouse.getCustomer(customerId).canMakeOrder())
+        {
+            distance = wareHouse.getCustomer(customerId).getCustomerDistance();
+            int orderId(wareHouse.setOrderId());
+            Order *newOrder = new Order(orderId,customerId,distance);
+            wareHouse.getCustomer(customerId).addOrder(orderId);
+            wareHouse.addOrder(newOrder);
 
-       complete();
-       wareHouse.addAction(this);
+            complete();
+            wareHouse.addAction(this);
+        } else
+        {
+            maxorders = true;
+        }
+        
     }
-    catch(const std::exception& e)
+    catch(const std::runtime_error& e)
     {
         error("”Cannot place this order");
+        wareHouse.addAction(this);
         std::cerr << e.what() << '\n';
-    }   
+    }
+    if (maxorders)
+    {
+        error("”Cannot place this order");
+        wareHouse.addAction(this);
+        std::cout << "Customer " << customerId << " reached his maxOrders limit" << std::endl;
+    }
+    
 }
 
 string AddOrder::toString() const
 {
-    string output = "order " + customerId;
+    string output = "order ";
+    output += std::to_string(customerId);
 
     if (getStatus() == ActionStatus::COMPLETED)
     {
-        return output + " Completed";
+        return (output += " Completed");
     } else
     {
-        return output + " Error: " + getErrorMsg();
+        return (output += " Error: " + getErrorMsg());
     }   
 } 
 AddOrder *AddOrder::clone() const
@@ -96,7 +115,7 @@ AddOrder *AddOrder::clone() const
 
 
 
-AddCustomer::AddCustomer(const string &customerName, const string &customerType, int distance, int maxOrders) : customerName(customerName),distance(distance),maxOrders(maxOrders), customerType(convert(customerType)){}
+AddCustomer::AddCustomer(const string &customerName, const string &customerType, int distance, int maxOrders) : customerName(customerName), customerType(convert(customerType)), distance(distance), maxOrders(maxOrders){}
 
 const CustomerType AddCustomer::convert(string customerType)
 {
@@ -178,14 +197,14 @@ PrintOrderStatus *PrintOrderStatus::clone() const
 }
 string PrintOrderStatus::toString() const
 {
-    string output = "orderStatus " + orderId;
+    string output = "orderStatus " + std::to_string(orderId);
 
     if (getStatus() == ActionStatus::COMPLETED)
     {
-        return output + " Completed";
+        return output += " Completed";
     } else
     {
-        return output + " Error: " + getErrorMsg();
+        return output += " Error: " + getErrorMsg();
     }
 }
 
@@ -199,12 +218,12 @@ void PrintCustomerStatus::act(WareHouse &wareHouse)
     try
     {
         orderIds = wareHouse.getCustomer(customerId).getOrdersIds();
-        string output = "CustomerID: " + customerId;
-        output = "\n";
+        string output = "CustomerID: " + std::to_string(customerId);
+        output += "\n";
 
         for (int orderId : orderIds)
         {
-            output += "OrderID: " + orderId;
+            output += "OrderID: " + std::to_string(orderId);
             output += "\n";
             output += wareHouse.getOrder(orderId).printOrderStatus();
             output += "\n";
@@ -230,14 +249,14 @@ PrintCustomerStatus *PrintCustomerStatus::clone() const
 }
 string PrintCustomerStatus::toString() const
 {
-    string output = "customerStatus " + customerId;
+    string output = "customerStatus " + std::to_string(customerId);
 
     if (getStatus() == ActionStatus::COMPLETED)
     {
-        return output + " Completed";
+        return output += " Completed";
     } else
     {
-        return output + " Error: " + getErrorMsg();
+        return output += " Error: " + getErrorMsg();
     }
 }
 
@@ -270,14 +289,14 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const
 }
 string PrintVolunteerStatus::toString() const
 {
-    string output = "volunteerStatus " + volunteerId;
+    string output = "volunteerStatus " + std::to_string(volunteerId);
 
     if (getStatus() == ActionStatus::COMPLETED)
     {
-        return output + " Completed";
+        return output += " Completed";
     } else
     {
-        return output + " Error: " + getErrorMsg();
+        return output += " Error: " + getErrorMsg();
     }
 }
 
@@ -309,13 +328,16 @@ string PrintActionsLog::toString() const
 
 
 Close::Close(){};
-
 void Close::act(WareHouse &wareHouse)
 {
     complete();
     wareHouse.addAction(this);
     wareHouse.close();
     // make sure warehouse.close() do all the printing, free the memory and exit!!!
+}
+Close *Close::clone() const
+{
+    return new Close(*this);
 }
 string Close::toString() const
 {

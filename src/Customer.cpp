@@ -3,9 +3,9 @@
 #include "../include/Order.h"
 
 //constructor
-Customer::Customer(int id, const string &name, int locationDistance, int maxOrders) : id(id), name(name),locationDistance(locationDistance), maxOrders(maxOrders) {}
+Customer::Customer(int id, const string &name, int locationDistance, int maxOrders) : id(id), name(name), locationDistance(locationDistance), maxOrders(maxOrders), ordersId() {}
 // copy consturctor
-Customer::Customer(const Customer &other) : id(other.id), name(other.name),locationDistance(other.locationDistance), maxOrders(other.maxOrders) {}
+Customer::Customer(const Customer &other) : id(other.id), name(other.name),locationDistance(other.locationDistance), maxOrders(other.maxOrders), ordersId(other.ordersId) {}
 // destructor
 Customer:: ~Customer() = default;
 //getters 
@@ -35,8 +35,8 @@ const vector<int> &Customer::getOrdersIds() const
 }
 //info
 bool Customer::canMakeOrder() const {
-    return ordersId.size() < maxOrders;
-};
+    return static_cast<int>(ordersId.size()) < maxOrders;
+}
 
 //actions
 int Customer::addOrder(int orderId) {

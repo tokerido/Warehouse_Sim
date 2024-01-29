@@ -43,6 +43,14 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "bit": "cpp"
-    }
+        "bit": "cpp",
+        "cinttypes": "cpp"
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/users/bsc/idoto/SPL projects/ass1/bin",
+            "binaryPath": "/home/users/bsc/idoto/SPL projects/ass1/bin/WareHouse",
+            "binaryArgs": []
+        }
+    ]
 }

@@ -19,6 +19,8 @@ class WareHouse {
         WareHouse(WareHouse &other);
         WareHouse(WareHouse &&other);
         WareHouse &operator=(WareHouse &other);
+        WareHouse &operator=(WareHouse &&other);
+
         void start();
         const vector<BaseAction*> &getActionsLog() const;
         void addOrder(Order* order);
@@ -34,8 +36,9 @@ class WareHouse {
         int setVolunteerId(); // new func
         int setOrderId(); //new func
         void clear(); //new function
-        void simulateStep(); // new func
-        ~WareHouse();
+        void simulateOneStep(); // new func
+        vector<string> split(const string& str); //new func
+        ~WareHouse(); //new func
 
     private:
         bool isOpen;

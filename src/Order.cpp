@@ -38,19 +38,19 @@ OrderStatus Order::getStatus() const
 const string Order::toString() const
 {
     string output;
-    output += "OrderId: " + id;
+    output += "OrderId: " + std::to_string(id);
     output += "\n";
 
     output += printOrderStatus(); 
     output += "\n";
 
-    output += "CustomerID: " + getCustomerId();
+    output += "CustomerID: " + std::to_string(getCustomerId());
     output += "\n";
 
     output += "Collector: ";
     if (getCollectorId() != NO_VOLUNTEER)
     {
-        output += getCollectorId();
+        output += std::to_string(getCollectorId());
     } else
     {
         output += "None";
@@ -60,12 +60,12 @@ const string Order::toString() const
     output += "Driver: ";
     if (getDriverId() != NO_VOLUNTEER)
     {
-        output += getDriverId();
+        output += std::to_string(getDriverId());
     } else
     {
         output += "None";
     }
-
+    output += "\n";
     return output;
 }
 const string Order::printOrderStatus() const

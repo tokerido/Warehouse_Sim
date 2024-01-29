@@ -13,6 +13,7 @@ struct CustomerStruct {
     std::string type;
     int distance;
     int maxOrders;
+    CustomerStruct(): name(""), type(""), distance(0), maxOrders(0) {};
 };
 
 struct VolunteerStruct {
@@ -22,9 +23,11 @@ struct VolunteerStruct {
     int maxDistance; // Only for drivers
     int distancePerStep; // Only for drivers
     int maxOrders; // Optional
+    VolunteerStruct(): name(""), role(""), coolDown(0), maxDistance(0), distancePerStep(0), maxOrders(0) {};
 };
 
-Parse::Parse(const string &configFilePath, WareHouse &wareHouse)
+
+Parse::Parse(const string &configFilePath, WareHouse &wareHouse) : customersList(), volunteersList()
 {
     // Specify the file path
     std::string file_path = configFilePath;
@@ -64,7 +67,7 @@ Parse::Parse(const string &configFilePath, WareHouse &wareHouse)
             VolunteerStruct volunteer;
             iss >> volunteer.name >> volunteer.role;
 
-            if (volunteer.role == "driver" | volunteer.role == "limited_driver") {
+            if (volunteer.role == "driver" or volunteer.role == "limited_driver") {
                 iss >> volunteer.maxDistance >> volunteer.distancePerStep;
             } else {
                 iss >> volunteer.coolDown; // In case of collector
@@ -111,6 +114,7 @@ Parse::Parse(const string &configFilePath, WareHouse &wareHouse)
             volunteersList.push_back(driverVolunteer);
         }else {
             LimitedDriverVolunteer *limitedDriverVolunteer = new LimitedDriverVolunteer(id, volunteer.name, volunteer.maxDistance, volunteer.distancePerStep, volunteer.maxOrders);
+            volunteersList.push_back(limitedDriverVolunteer);
         }
     }
 }

@@ -4,9 +4,8 @@
 #include <iostream>
 
 //Volunteer constructor
-Volunteer::Volunteer(int id, const string &name) : id(id), name(name), completedOrderId(NO_ORDER), activeOrderId(NO_ORDER) {}
-//volunteer copy constuctor
-Volunteer::Volunteer(const Volunteer &other):id(other.id), name(other.name), completedOrderId(NO_ORDER),activeOrderId(NO_ORDER){}
+Volunteer::Volunteer(int id, const string &name) : completedOrderId(NO_ORDER), activeOrderId(NO_ORDER), id(id), name(name) {}
+
 //Volunteer destructor
 Volunteer:: ~Volunteer() = default;
 int Volunteer::getId() const
@@ -32,7 +31,7 @@ bool Volunteer::isBusy() const
 
 
 
-CollectorVolunteer::CollectorVolunteer(int id, string name, int coolDown): Volunteer(id, name), coolDown(coolDown), timeLeft(0){}
+CollectorVolunteer::CollectorVolunteer(int id, string name, int coolDown) : Volunteer(id, name), coolDown(coolDown), timeLeft(0) {}
 CollectorVolunteer *CollectorVolunteer::clone() const
 {
     return new CollectorVolunteer(*this); //???
@@ -83,43 +82,37 @@ string CollectorVolunteer::toString() const
 {
     string output;
     // print id
-    output += "VoulunteerID: " + getId();
+    output += "VoulunteerID: " + std::to_string(getId());
     output += "\n";
 
-    // print isBusy
+    // print everything else
     bool busy = isBusy();
-    output += "isBusy: " + busy;
-    output += "\n";
-
-    // print order id (if necessary)
     if (!busy)
     {
+        output += "isBusy: False";
+        output += "\n";
         output += "OrderID: None";
         output += "\n";
-    } else
-    {
-        output += "OrderID: " + getActiveOrderId();
-        output += "\n";
-    }
-
-    // print time left
-        if (!busy)
-    {
         output += "TimeLeft: None";
         output += "\n";
     } else
     {
-        output += "TimeLeft: " + getTimeLeft();
+        output += "isBusy: True";
         output += "\n";
+        output += "OrderID: " + std::to_string(getActiveOrderId());
+        output += "\n";
+        output += "TimeLeft: " + std::to_string(getTimeLeft());
+        output += "\n";  
     }
 
-    // print orders left
-        output += "OrdersLeft: No Limit";
+    // print Orders Left
+    output += "OrdersLeft: No Limit";
+    output += "\n";
         
     return output;
 }
 
-LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, string name, int coolDown ,int maxOrders): CollectorVolunteer(id, name, coolDown), maxOrders(maxOrders), ordersLeft(maxOrders){}
+LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, string name, int coolDown, int maxOrders) : CollectorVolunteer(id, name, coolDown), maxOrders(maxOrders), ordersLeft(maxOrders) {}
 LimitedCollectorVolunteer *LimitedCollectorVolunteer::clone() const
 {
     return new LimitedCollectorVolunteer(*this);
@@ -149,38 +142,31 @@ string LimitedCollectorVolunteer::toString() const
 {
     string output;
     // print id
-    output += "VoulunteerID: " + getId();
+    output += "VoulunteerID: " + std::to_string(getId());
     output += "\n";
 
-    // print isBusy
+    // print everything else
     bool busy = isBusy();
-    output += "isBusy: " + busy;
-    output += "\n";
-
-    // print order id (if necessary)
     if (!busy)
     {
+        output += "isBusy: False";
+        output += "\n";
         output += "OrderID: None";
         output += "\n";
-    } else
-    {
-        output += "OrderID: " + getActiveOrderId();
-        output += "\n";
-    }
-
-    // print time left
-        if (!busy)
-    {
         output += "TimeLeft: None";
         output += "\n";
     } else
     {
-        output += "TimeLeft: " + getTimeLeft();
+        output += "isBusy: True";
         output += "\n";
+        output += "OrderID: " + std::to_string(getActiveOrderId());
+        output += "\n";
+        output += "TimeLeft: " + std::to_string(getTimeLeft());
+        output += "\n";  
     }
 
     // print orders left
-        output += "OrdersLeft: " + ordersLeft;
+        output += "OrdersLeft: " + std::to_string(ordersLeft);
         output += "\n";
         
     return output;
@@ -189,7 +175,7 @@ string LimitedCollectorVolunteer::toString() const
 
 
 
-DriverVolunteer::DriverVolunteer(int id, string name, int maxDistance, int distancePerStep): Volunteer(id, name), maxDistance(maxDistance), distancePerStep(distancePerStep), distanceLeft(0){}
+DriverVolunteer::DriverVolunteer(int id, string name, int maxDistance, int distancePerStep) : Volunteer(id, name), maxDistance(maxDistance), distancePerStep(distancePerStep), distanceLeft(0) {}
 DriverVolunteer *DriverVolunteer::clone() const
 {
     return new DriverVolunteer(*this);
@@ -246,44 +232,37 @@ string DriverVolunteer::toString() const
 {
     string output;
     // print id
-    output += "VoulunteerID: " + getId();
+    output += "VoulunteerID: " + std::to_string(getId());
     output += "\n";
 
-    // print isBusy
+    // print everything else
     bool busy = isBusy();
-    output += "isBusy: " + busy;
-    output += "\n";
-
-    // print order id (if necessary)
     if (!busy)
     {
+        output += "isBusy: False";
+        output += "\n";
         output += "OrderID: None";
         output += "\n";
-    } else
-    {
-        output += "OrderID: " + getActiveOrderId();
-        output += "\n";
-    }
-
-    // print time left
-        if (!busy)
-    {
         output += "TimeLeft: None";
         output += "\n";
     } else
     {
-        output += "TimeLeft: " + getDistanceLeft();
+        output += "isBusy: True";
         output += "\n";
+        output += "OrderID: " + std::to_string(getActiveOrderId());
+        output += "\n";
+        output += "TimeLeft: " + std::to_string(getDistanceLeft());
+        output += "\n";  
     }
 
     // print orders left
         output += "OrdersLeft: No Limit";
-
+        output += "\n";
     return output;
 }
 
 
-LimitedDriverVolunteer::LimitedDriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep,int maxOrders): DriverVolunteer(id, name, maxDistance, distancePerStep), maxOrders(maxOrders), ordersLeft(maxOrders){}
+LimitedDriverVolunteer::LimitedDriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep, int maxOrders) : DriverVolunteer(id, name, maxDistance, distancePerStep), maxOrders(maxOrders), ordersLeft(maxOrders) {}
 LimitedDriverVolunteer *LimitedDriverVolunteer:: clone() const
 {
      return new LimitedDriverVolunteer(*this);
@@ -313,38 +292,31 @@ string LimitedDriverVolunteer::toString() const
 {
     string output;
     // print id
-    output += "VoulunteerID: " + getId();
+    output += "VoulunteerID: " + std::to_string(getId());
     output += "\n";
 
-    // print isBusy
+    // print everything else
     bool busy = isBusy();
-    output += "isBusy: " + busy;
-    output += "\n";
-
-    // print order id (if necessary)
     if (!busy)
     {
+        output += "isBusy: False";
+        output += "\n";
         output += "OrderID: None";
         output += "\n";
-    } else
-    {
-        output += "OrderID: " + getActiveOrderId();
-        output += "\n";
-    }
-
-    // print time left
-        if (!busy)
-    {
         output += "TimeLeft: None";
         output += "\n";
     } else
     {
-        output += "TimeLeft: " + getDistanceLeft();
+        output += "isBusy: True";
         output += "\n";
+        output += "OrderID: " + std::to_string(getActiveOrderId());
+        output += "\n";
+        output += "TimeLeft: " + std::to_string(getDistanceLeft());
+        output += "\n";  
     }
 
     // print orders left
-        output += "OrdersLeft: " + ordersLeft;
+        output += "OrdersLeft: " + std::to_string(ordersLeft);
         output += "\n";
 
     return output;
