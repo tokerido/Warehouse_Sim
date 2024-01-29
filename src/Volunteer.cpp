@@ -34,7 +34,7 @@ bool Volunteer::isBusy() const
 CollectorVolunteer::CollectorVolunteer(int id, string name, int coolDown) : Volunteer(id, name), coolDown(coolDown), timeLeft(0) {}
 CollectorVolunteer *CollectorVolunteer::clone() const
 {
-    return new CollectorVolunteer(*this); //???
+    return new CollectorVolunteer(*this);
 }
 void CollectorVolunteer::step()
 {

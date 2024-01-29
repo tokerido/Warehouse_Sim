@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 
-WareHouse::WareHouse(const string &configFilePath) : isOpen(false), actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers(), customerCounter(1), volunteerCounter(1), orderCounter(1)
+WareHouse::WareHouse(const string &configFilePath) : isOpen(false), actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCounter(0)
 {
     Parse parse(configFilePath, *this);
     customers = parse.getCustomersList();
@@ -62,10 +62,6 @@ void WareHouse::clear()
         delete pendingOrders.back();
         pendingOrders.pop_back();
     }
-    while(!pendingOrders.empty()) {
-        delete pendingOrders.back();
-        pendingOrders.pop_back();
-    }
     while(!inProcessOrders.empty()) {
         delete inProcessOrders.back();
         inProcessOrders.pop_back();
@@ -110,18 +106,15 @@ WareHouse &WareHouse ::operator=(WareHouse &other)
         }
         for (Order *order : other.pendingOrders)
         {
-            Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-            pendingOrders.push_back(newOrder);
+            pendingOrders.push_back(order->clone());
         }
         for (Order *order : other.inProcessOrders)
         {
-            Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-            inProcessOrders.push_back(newOrder);
+            inProcessOrders.push_back(order->clone());
         }
         for (Order *order : other.completedOrders)
         {
-            Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-            completedOrders.push_back(newOrder);
+            completedOrders.push_back(order->clone());
         }
     }
     return *this;
@@ -370,17 +363,17 @@ void WareHouse::close()
     string output;
     for (Order *order : pendingOrders)
     {
-        output += order->toString();
+        output += "OrederID: " + std::to_string(order->getId()) + " , CustomerID: " + std::to_string(order->getCustomerId()) + " , OrderStatus: " + order->printOrderStatus();
         output += "\n";
     }
     for (Order *order : inProcessOrders)
     {
-        output += order->toString();
+        output += "OrederID: " + std::to_string(order->getId()) + " , CustomerID: " + std::to_string(order->getCustomerId()) + " , OrderStatus: " + order->printOrderStatus();
         output += "\n";
     }
     for (Order *order : completedOrders)
     {
-        output += order->toString();
+        output += "OrederID: " + std::to_string(order->getId()) + " , CustomerID: " + std::to_string(order->getCustomerId()) + " , OrderStatus: " + order->printOrderStatus();
         output += "\n";
     }
     std::cout << output << std::endl;
@@ -414,84 +407,94 @@ int WareHouse::setOrderId()
 void WareHouse::simulateOneStep()
 {
     // assign orders
-    vector<Order *>::iterator itPending = pendingOrders.begin();
-    bool assigned = false;
-    
-    for (Order *order : pendingOrders)
-    {
-        for (Volunteer *volunteer : volunteers)
-        {
-            if (!assigned && volunteer->canTakeOrder(*order))
-            {
-                volunteer->acceptOrder(*order);
-                if (order->getStatus() == OrderStatus::PENDING)
-                {
-                    order->setStatus(OrderStatus::COLLECTING);
-                    order->setCollectorId(volunteer->getId());
-                } else
-                {
-                    order->setStatus(OrderStatus::DELIVERING);
-                    order->setDriverId(volunteer->getId());
-                }
-                inProcessOrders.push_back(*itPending); // i hope it does the right trick
-                itPending = pendingOrders.erase(itPending);
-                assigned = true;
-            }
-        }
-        if (!assigned)
-        {
-            ++itPending;
-        }
-        assigned = false;
-    }
+vector<Order *>::iterator itPending = pendingOrders.begin();
 
-    // preform a step
-    vector<Volunteer *>::iterator itVolunteers = volunteers.begin();
-    bool wasDeleted = false;
+while (itPending != pendingOrders.end())
+{
+    bool assigned = false;
+
     for (Volunteer *volunteer : volunteers)
     {
-        if (volunteer->isBusy())
+        if (!assigned && volunteer->canTakeOrder(**itPending))
         {
-            volunteer->step();
-            if (!(volunteer->isBusy()))
+            volunteer->acceptOrder(**itPending);
+            if ((*itPending)->getStatus() == OrderStatus::PENDING)
             {
-                int orderId = volunteer->getCompletedOrderId();
-                vector<Order *>::iterator itInProcess = inProcessOrders.begin();
-                bool found = false;
-                for (Order *order : inProcessOrders)
+                (*itPending)->setStatus(OrderStatus::COLLECTING);
+                (*itPending)->setCollectorId(volunteer->getId());
+            }
+            else
+            {
+                (*itPending)->setStatus(OrderStatus::DELIVERING);
+                (*itPending)->setDriverId(volunteer->getId());
+            }
+            inProcessOrders.push_back(*itPending);
+            itPending = pendingOrders.erase(itPending);
+            assigned = true;
+        }
+    }
+    
+    if (!assigned)
+    {
+        ++itPending;
+    }
+}
+
+    // preform a step
+vector<Volunteer *>::iterator itVolunteers = volunteers.begin();
+
+while (itVolunteers != volunteers.end())
+{
+    bool wasDeleted = false;
+    Volunteer *volunteer = *itVolunteers;
+
+    if (volunteer->isBusy())
+    {
+        volunteer->step();
+        if (!volunteer->isBusy())
+        {
+            int orderId = volunteer->getCompletedOrderId();
+            vector<Order *>::iterator itInProcess = inProcessOrders.begin();
+            bool found = false;
+
+            while (itInProcess != inProcessOrders.end())
+            {
+                Order *order = *itInProcess;
+
+                if (!found && order->getId() == orderId)
                 {
-                    if (!found && order->getId() == orderId)
+                    if (order->getStatus() == OrderStatus::COLLECTING)
                     {
-                        if (order->getStatus() == OrderStatus::COLLECTING)
-                        {
-                            pendingOrders.push_back(*itInProcess); // i hope it does the right trick
-                            itPending = inProcessOrders.erase(itPending);
-                        }
-                        else
-                        {
-                            order->setStatus(OrderStatus::COMPLETED);
-                            completedOrders.push_back(*itInProcess); // i hope it does the right trick
-                            itPending = inProcessOrders.erase(itPending);
-                        }
-                        found = true;
+                        pendingOrders.push_back(order);
                     }
-                    if (!found)
+                    else
                     {
-                        ++itInProcess;
+                        order->setStatus(OrderStatus::COMPLETED);
+                        completedOrders.push_back(order);
                     }
+
+                    itInProcess = inProcessOrders.erase(itInProcess);
+                    found = true;
                 }
-                if (!(volunteer->hasOrdersLeft()))
+                else
                 {
-                    delete volunteer;
-                    itVolunteers = volunteers.erase(itVolunteers);
-                    wasDeleted = true;
+                    ++itInProcess;
                 }
             }
+
+            if (!volunteer->hasOrdersLeft())
+            {
+                delete volunteer;
+                itVolunteers = volunteers.erase(itVolunteers);
+                wasDeleted = true;
+            }
         }
-        if (!wasDeleted)
-        {
-          ++itVolunteers;  
-        } 
-        wasDeleted = false;
     }
+
+    if (!wasDeleted)
+    {
+        ++itVolunteers;
+    }
+}
+
 }

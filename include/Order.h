@@ -32,6 +32,7 @@ class Order {
         const string toString() const;
         const string printOrderStatus() const; // new func
         int getDistance() const; // new func that returns orders distance
+        Order *clone() const; // new func
 
     private:
         const int id;

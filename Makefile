@@ -1,4 +1,4 @@
-all: clean compile link
+all: clean compile link clesnObjAndRun
 
 link:
 	g++ -o bin/warehouse bin/Action.o bin/Customer.o bin/Order.o bin/Volunteer.o bin/WareHouse.o bin/Parse.o bin/main.o
@@ -13,3 +13,7 @@ compile:
 	g++ -g -Wall -Weffc++ -c -o bin/main.o src/main.cpp
 clean:
 	rm -f bin/*
+clesnObjAndRun:
+	rm -f *.O
+	clear
+	valgrind --leak-check=full --show-reachable=yes ./bin/warehouse "/home/users/bsc/idoto/SPL projects/ass1/src/configFileExample.txt"

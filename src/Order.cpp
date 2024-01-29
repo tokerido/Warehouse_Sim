@@ -91,4 +91,8 @@ int Order::getDistance() const
 {
     return distance;
 }
+Order *Order::clone() const
+{
+    return new Order(*this);
+}
 
