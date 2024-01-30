@@ -29,19 +29,16 @@ WareHouse::WareHouse(WareHouse &other) : isOpen(other.isOpen), actionsLog(), vol
         volunteers.push_back(volunteer->clone());
     }
     for (Order *order : other.pendingOrders)
-    {
-        Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-        pendingOrders.push_back(newOrder);
+    {   
+        pendingOrders.push_back(order->clone());
     }
     for (Order *order : other.inProcessOrders)
     {
-        Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-        inProcessOrders.push_back(newOrder);
+        inProcessOrders.push_back(order->clone());
     }
     for (Order *order : other.completedOrders)
     {
-        Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-        completedOrders.push_back(newOrder);
+        completedOrders.push_back(order->clone());
     }
     for (Customer *customer : other.customers)
     {
@@ -105,7 +102,7 @@ WareHouse &WareHouse ::operator=(WareHouse &other)
             customers.push_back(customer->clone());
         }
         for (Order *order : other.pendingOrders)
-        {
+        {   
             pendingOrders.push_back(order->clone());
         }
         for (Order *order : other.inProcessOrders)
@@ -132,18 +129,15 @@ WareHouse::WareHouse(WareHouse &&other) : isOpen(other.isOpen), actionsLog(), vo
     }
     for (Order *order : other.pendingOrders)
     {
-        Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-        pendingOrders.push_back(newOrder);
+        pendingOrders.push_back(order);
     }
     for (Order *order : other.inProcessOrders)
     {
-        Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-        inProcessOrders.push_back(newOrder);
+        inProcessOrders.push_back(order);
     }
     for (Order *order : other.completedOrders)
     {
-        Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-        completedOrders.push_back(newOrder);
+        completedOrders.push_back(order);
     }
     for (Customer *customer : other.customers)
     {
@@ -160,6 +154,7 @@ WareHouse &WareHouse::operator=(WareHouse &&other)
         volunteerCounter = other.volunteerCounter;
         orderCounter = other.orderCounter;
         isOpen = other.isOpen;
+        clear();
         for (BaseAction *action : other.actionsLog)
         {
             actionsLog.push_back(action);
@@ -173,25 +168,23 @@ WareHouse &WareHouse::operator=(WareHouse &&other)
             customers.push_back(customer);
         }
         for (Order *order : other.pendingOrders)
-        {
-            Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-            pendingOrders.push_back(newOrder);
+        {   
+            pendingOrders.push_back(order->clone());
         }
         for (Order *order : other.inProcessOrders)
         {
-            Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-            inProcessOrders.push_back(newOrder);
+            inProcessOrders.push_back(order->clone());
         }
         for (Order *order : other.completedOrders)
         {
-            Order *newOrder = new Order(order->getId(), order->getCustomerId(), order->getDistance());
-            completedOrders.push_back(newOrder);
+            completedOrders.push_back(order->clone());
         }
 
         other.clear();
     }
     return *this;
 }
+
 vector<string> splitWords(const string& str)
 {
     vector<string> output;

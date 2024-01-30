@@ -364,7 +364,7 @@ void BackupWareHouse::act(WareHouse &wareHouse)
 {
     delete backup;
     backup = nullptr;
-    backup = new WareHouse(wareHouse);
+    *backup = wareHouse;
     complete();
     wareHouse.addAction(this);
 }
