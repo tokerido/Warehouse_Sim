@@ -13,7 +13,6 @@ enum class CustomerType{
     Soldier, Civilian
 };
 
-class Customer;
 
 class BaseAction{
     public:

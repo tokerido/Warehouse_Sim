@@ -5,9 +5,6 @@ using std::string;
 using std::vector;
 
 
-class Order;
-
-
 class Customer {
     public:
         Customer(int id, const string &name, int locationDistance, int maxOrders);
@@ -35,7 +32,7 @@ class Customer {
 
 class SoldierCustomer: public Customer {
     public:
-        SoldierCustomer(int id, string name, int locationDistance, int maxOrders);
+        SoldierCustomer(int id, const string &name, int locationDistance, int maxOrders);
         SoldierCustomer *clone() const override;
     
     private:
@@ -44,7 +41,7 @@ class SoldierCustomer: public Customer {
 
 class CivilianCustomer: public Customer {
     public:
-        CivilianCustomer(int id, string name, int locationDistance, int maxOrders);
+        CivilianCustomer(int id, const string &name, int locationDistance, int maxOrders);
         CivilianCustomer *clone() const override;
     
     private:

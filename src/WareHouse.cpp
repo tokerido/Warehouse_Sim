@@ -143,7 +143,12 @@ WareHouse::WareHouse(WareHouse &&other) : isOpen(other.isOpen), actionsLog(), vo
     {
         customers.push_back(customer);
     }
-    other.clear();
+    other.actionsLog.clear();
+    other.volunteers.clear();
+    other.pendingOrders.clear();
+    other.inProcessOrders.clear();
+    other.completedOrders.clear();
+    other.customers.clear();
 }
 //move Assignment operator
 WareHouse &WareHouse::operator=(WareHouse &&other)
@@ -169,18 +174,22 @@ WareHouse &WareHouse::operator=(WareHouse &&other)
         }
         for (Order *order : other.pendingOrders)
         {   
-            pendingOrders.push_back(order->clone());
+            pendingOrders.push_back(order);
         }
         for (Order *order : other.inProcessOrders)
         {
-            inProcessOrders.push_back(order->clone());
+            inProcessOrders.push_back(order);
         }
         for (Order *order : other.completedOrders)
         {
-            completedOrders.push_back(order->clone());
+            completedOrders.push_back(order);
         }
-
-        other.clear();
+        other.actionsLog.clear();
+        other.volunteers.clear();
+        other.pendingOrders.clear();
+        other.inProcessOrders.clear();
+        other.completedOrders.clear();
+        other.customers.clear();
     }
     return *this;
 }
@@ -209,7 +218,7 @@ void WareHouse::start()
     std::cout << "Warehouse is open!" << std::endl;
     while (isOpen)
     {
-        std::cout << "Enter action:" << std::endl;
+        std::cout << "\n" << "Enter action:" << std::endl;
         std::string action;
         std::getline(std::cin, action);
         std::vector<std::string> words = splitWords(action);
@@ -267,11 +276,15 @@ void WareHouse::start()
             BackupWareHouse* backUp = new BackupWareHouse();
             backUp->act(*this);
         }
-        else
+        else if (words[0] == "restore")
         {
             RestoreWareHouse* restore = new RestoreWareHouse();
             restore->act(*this);
+        } else
+        {
+            std::cout << "Action doesn't exist";
         }
+        
         words.clear();
     }
     

@@ -84,13 +84,13 @@ void AddOrder::act(WareHouse &wareHouse)
     {
         error("Cannot place this order");
         wareHouse.addAction(this);
-        std::cerr << "Error: " << e.what() << '\n';
+        std::cerr << "Error: " << getErrorMsg() << '\n';
     }
     if (maxorders)
     {
         error("Cannot place this order");
         wareHouse.addAction(this);
-        std::cout << "Error: " <<getErrorMsg() << std::endl;
+        std::cout << "Error: " << getErrorMsg() << std::endl;
         // "Customer " << customerId << " reached his maxOrders limit"
     }
     
@@ -120,7 +120,7 @@ AddCustomer::AddCustomer(const string &customerName, const string &customerType,
 
 const CustomerType AddCustomer::convert(string customerType)
 {
-    if (customerType == "solider")
+    if (customerType == "soldier")
     {
         return CustomerType::Soldier;
     } else {
@@ -154,7 +154,7 @@ string AddCustomer::toString() const
         output += " civilian ";
     } else
     {
-        output += " solider ";
+        output += " soldier ";
     }
     output += std::to_string(distance);
     output += " ";
@@ -362,9 +362,14 @@ BackupWareHouse::BackupWareHouse(){};
 
 void BackupWareHouse::act(WareHouse &wareHouse)
 {
-    delete backup;
-    backup = nullptr;
-    *backup = wareHouse;
+    if(backup != nullptr)
+    {
+        *backup = wareHouse;
+    } else
+    {
+        backup = new WareHouse(wareHouse);
+    }
+    
     complete();
     wareHouse.addAction(this);
 }

@@ -31,7 +31,7 @@ bool Volunteer::isBusy() const
 
 
 
-CollectorVolunteer::CollectorVolunteer(int id, string name, int coolDown) : Volunteer(id, name), coolDown(coolDown), timeLeft(0) {}
+CollectorVolunteer::CollectorVolunteer(int id, const string &name, int coolDown) : Volunteer(id, name), coolDown(coolDown), timeLeft(0) {}
 CollectorVolunteer *CollectorVolunteer::clone() const
 {
     return new CollectorVolunteer(*this);
@@ -112,7 +112,7 @@ string CollectorVolunteer::toString() const
     return output;
 }
 
-LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, string name, int coolDown, int maxOrders) : CollectorVolunteer(id, name, coolDown), maxOrders(maxOrders), ordersLeft(maxOrders) {}
+LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, const string &name, int coolDown, int maxOrders) : CollectorVolunteer(id, name, coolDown), maxOrders(maxOrders), ordersLeft(maxOrders) {}
 LimitedCollectorVolunteer *LimitedCollectorVolunteer::clone() const
 {
     return new LimitedCollectorVolunteer(*this);
@@ -175,7 +175,7 @@ string LimitedCollectorVolunteer::toString() const
 
 
 
-DriverVolunteer::DriverVolunteer(int id, string name, int maxDistance, int distancePerStep) : Volunteer(id, name), maxDistance(maxDistance), distancePerStep(distancePerStep), distanceLeft(0) {}
+DriverVolunteer::DriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep) : Volunteer(id, name), maxDistance(maxDistance), distancePerStep(distancePerStep), distanceLeft(0) {}
 DriverVolunteer *DriverVolunteer::clone() const
 {
     return new DriverVolunteer(*this);
