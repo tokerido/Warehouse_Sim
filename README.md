@@ -1,4 +1,4 @@
-# Warehouse_Sim: Food Warehouse Management System
+# Warehouse_Sim
 
 ## Overview
 
@@ -41,10 +41,9 @@ Users can control the simulation through commands that allow:
 - Placing and tracking orders.
 - Progressing through simulation steps to see the impact of various actions.
 
-This detailed simulation provides insights into the logistics of food distribution in crisis situations, highlighting the importance of efficient management and the roles of individuals in ensuring the well-being of a community.
 
 ## Copyright Notice
 
-© 2024 by Nitai Edelberg and Ido Toker.  
-This project is a result of academic work completed as part of the Computer Science program at Ben-Gurion University of the Negev.  
-All rights reserved. Unauthorized use, distribution, or reproduction of this work without express written permission from the author is strictly prohibited.
+© 2024 by Nitai Edelberg and Ido Toker. All rights reserved.
+
+This project is a part of academic work at Ben Gurion University. Unauthorized use, copying, or distribution is prohibited.
