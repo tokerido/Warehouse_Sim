@@ -45,6 +45,6 @@ This detailed simulation provides insights into the logistics of food distributi
 
 ## Copyright Notice
 
-© 2023/Fall by Nitai Edelberg and Ido Toker.  
+© 2024 by Nitai Edelberg and Ido Toker.  
 This project is a result of academic work completed as part of the Computer Science program at Ben-Gurion University of the Negev.  
 All rights reserved. Unauthorized use, distribution, or reproduction of this work without express written permission from the author is strictly prohibited.
